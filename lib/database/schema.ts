@@ -34,6 +34,7 @@ export const comments = pgTable('comments', {
 	moderation_status: moderationStatusEnum('moderation_status').default('pending').notNull(),
 	author: varchar('author', { length: 255 }),
 	gif: json('gif').$type<{ src: string; alt: string; height: number; width: number }>(),
+	is_accepted: integer('is_accepted').default(0).notNull(),
 	timestamp: timestamp('timestamp').defaultNow().notNull(),
 });
 

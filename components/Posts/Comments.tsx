@@ -13,10 +13,13 @@ import {
   Spline,
   X,
   User,
+  Check,
 } from "lucide-react";
 import { useState, useCallback, useMemo, Suspense } from "react";
 import { Comment as CommentType, Gif } from "@/lib/models";
 import { createComment } from "@/lib/actions/createComment";
+import { markAsAccepted } from "@/lib/actions/markAsAccepted";
+import { unmarkAsAccepted } from "@/lib/actions/unmarkAsAccepted";
 import { CommentInput } from "./CommentInput";
 import { useToast } from "@/hooks/use-toast";
 // import GifInput from "./GiphyPicker";
@@ -45,6 +48,9 @@ interface SingleCommentProps {
   replyingTo: string | null;
   onSubmitReply: (body: string, gif: Gif | null) => Promise<void>;
   onCancelReply: () => void;
+  canMarkAsAccepted: boolean;
+  onMarkAsAccepted: (commentId: string) => Promise<void>;
+  onUnmarkAsAccepted: (commentId: string) => Promise<void>;
 }
 
 const SingleComment: React.FC<SingleCommentProps> = ({
@@ -54,6 +60,9 @@ const SingleComment: React.FC<SingleCommentProps> = ({
   replyingTo,
   onSubmitReply,
   onCancelReply,
+  canMarkAsAccepted,
+  onMarkAsAccepted,
+  onUnmarkAsAccepted,
 }) => {
   const [replyText, setReplyText] = useState("");
   const isReplying = replyingTo === comment.id;
@@ -98,9 +107,9 @@ const SingleComment: React.FC<SingleCommentProps> = ({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full group">
       <Card
-        className="relative w-full border-none bg-primary/[0.0225]"
+        className={`relative w-full border-none ${"bg-primary/[0.0225]"}`}
         id={comment.id}
       >
         <div
@@ -122,22 +131,28 @@ const SingleComment: React.FC<SingleCommentProps> = ({
               <span>{comment.author}</span>
             </div>
             <span>{getAgoDuration(new Date(comment.timestamp))}</span>
+            {comment.is_accepted && (
+              <div className="flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 rounded-full text-xs font-medium">
+                <Check size={12} />
+                <span>Accepted Answer</span>
+              </div>
+            )}
           </div>
           <div className="rounded-lg bg-primary/[0.015] p-3 mb-3 ">
             {/* <p className="text-sm text-foreground whitespace-pre-wrap break-words">
               {comment.body}
             </p> */}
-          <ReactMarkdown
-            className="line-clamp-3 sm:line-clamp-4"
-            components={{
-              a: (props) => (
-                <a className="text-primary hover:underline" {...props} />
-              ),
-            }}
-            rehypePlugins={[rehypeRaw]}
-          >
-            {DOMPurify.sanitize(trimBodyContent(comment.body))}
-        </ReactMarkdown>
+            <ReactMarkdown
+              className="line-clamp-3 sm:line-clamp-4"
+              components={{
+                a: (props) => (
+                  <a className="text-primary hover:underline" {...props} />
+                ),
+              }}
+              rehypePlugins={[rehypeRaw]}
+            >
+              {DOMPurify.sanitize(trimBodyContent(comment.body))}
+            </ReactMarkdown>
             {comment.gif && (
               <div className="flex flex-col gap-1">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -178,6 +193,40 @@ const SingleComment: React.FC<SingleCommentProps> = ({
               />
             </div>
             <div className="flex items-center justify-end space-x-2 w-full sm:w-auto">
+              {canMarkAsAccepted && !comment.is_accepted && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-green-600 w-max flex items-center justify-center hover:bg-green-100/50 dark:hover:bg-green-950/30 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => onMarkAsAccepted(comment.id)}
+                >
+                  <Check size={18} className="mr-1" />
+                  <div>
+                    <span className="sr-only">Mark as accepted answer</span>
+                    Accept
+                  </div>
+                </Button>
+              )}
+              {canMarkAsAccepted && comment.is_accepted && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-green-600 hover:text-red-600 w-max flex items-center justify-center hover:bg-red-100/50 dark:hover:bg-red-950/30 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => onUnmarkAsAccepted(comment.id)}
+                >
+                  <X size={18} className="mr-1" />
+                  <div>
+                    <span className="sr-only">Remove accepted status</span>
+                    Unmark
+                  </div>
+                </Button>
+              )}
+              {comment.is_accepted && !canMarkAsAccepted && (
+                <div className="flex items-center text-green-600 text-sm font-medium">
+                  <Check size={18} className="mr-1" />
+                  <span>Accepted</span>
+                </div>
+              )}
               <Button
                 variant="ghost"
                 size="sm"
@@ -214,9 +263,7 @@ const SingleComment: React.FC<SingleCommentProps> = ({
             <Suspense fallback={<AnimatedLoader />}>
               <EditorComp
                 markdown={replyText}
-                onChange={(value) =>
-                 setReplyText(value)
-                }
+                onChange={(value) => setReplyText(value)}
               />
             </Suspense>
           </div>
@@ -277,6 +324,9 @@ const SingleComment: React.FC<SingleCommentProps> = ({
               replyingTo={replyingTo}
               onSubmitReply={onSubmitReply}
               onCancelReply={onCancelReply}
+              canMarkAsAccepted={canMarkAsAccepted}
+              onMarkAsAccepted={onMarkAsAccepted}
+              onUnmarkAsAccepted={onUnmarkAsAccepted}
             />
           ))}
         </div>
@@ -318,9 +368,11 @@ const commentSortOptions: { title: string; value: CommentSortByType }[] = [
 export default function Comments({
   postID,
   initialComments,
+  canMarkAsAccepted,
 }: {
   postID: string;
   initialComments: ReturnedComment[];
+  canMarkAsAccepted: boolean;
 }) {
   const [comments, setComments] = useState<ReturnedComment[]>(initialComments);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
@@ -423,7 +475,7 @@ export default function Comments({
           title: "Reply couldn't be submitted",
           description:
             resp.errors!.body ||
-            (resp.errors as any)?.server ||
+            (resp.errors as Record<string, string>)?.server ||
             "An unknown error occurred",
           variant: "destructive",
         });
@@ -434,10 +486,81 @@ export default function Comments({
         title: "Reply submitted",
         description: "Your reply has been submitted successfully",
       });
-      setComments((prevComments) => [...prevComments, resp.data!]);
+      setComments((prevComments) => [
+        ...prevComments,
+        resp.data! as ReturnedComment,
+      ]);
       setReplyingTo(null);
     },
     [replyingTo, comments, postID, toast]
+  );
+
+  const handleMarkAsAccepted = useCallback(
+    async (commentId: string) => {
+      const resp = await markAsAccepted({
+        commentID: commentId,
+        postID,
+      });
+
+      if (!resp.success) {
+        toast({
+          title: "Could not mark comment as accepted",
+          description:
+            (resp.errors as Record<string, string>)?.server ||
+            "An unknown error occurred",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Comment marked as accepted",
+        description: "This comment has been marked as the accepted answer",
+      });
+
+      // Update the comments state to reflect the change
+      setComments((prevComments) =>
+        prevComments.map((comment) => ({
+          ...comment,
+          is_accepted: comment.id === commentId ? 1 : 0,
+        }))
+      );
+    },
+    [postID, toast]
+  );
+
+  const handleUnmarkAsAccepted = useCallback(
+    async (commentId: string) => {
+      const resp = await unmarkAsAccepted({
+        commentID: commentId,
+        postID,
+      });
+
+      if (!resp.success) {
+        toast({
+          title: "Could not unmark comment as accepted",
+          description:
+            (resp.errors as Record<string, string>)?.server ||
+            "An unknown error occurred",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Comment unmarked as accepted",
+        description: "This comment is no longer marked as the accepted answer",
+      });
+
+      // Update the comments state to reflect the change
+      setComments((prevComments) =>
+        prevComments.map((comment) => ({
+          ...comment,
+          is_accepted: comment.id === commentId ? 0 : comment.is_accepted,
+        }))
+      );
+    },
+    [postID, toast]
   );
 
   const submitTopLevelComment = useCallback(
@@ -455,7 +578,7 @@ export default function Comments({
           title: "Comment could not be posted",
           description:
             resp.errors!.body ||
-            (resp.errors as any)?.server ||
+            (resp.errors as Record<string, string>)?.server ||
             "An unknown error occurred",
           variant: "destructive",
           action: (
@@ -472,7 +595,10 @@ export default function Comments({
         title: "Comment submitted",
         description: "Your comment has been submitted successfully",
       });
-      setComments((prevComments) => [...prevComments, resp.data!]);
+      setComments((prevComments) => [
+        ...prevComments,
+        resp.data! as ReturnedComment,
+      ]);
     },
     [postID, toast]
   );
@@ -498,6 +624,9 @@ export default function Comments({
           replyingTo={replyingTo}
           onSubmitReply={handleSubmitReply}
           onCancelReply={() => setReplyingTo(null)}
+          canMarkAsAccepted={canMarkAsAccepted}
+          onMarkAsAccepted={handleMarkAsAccepted}
+          onUnmarkAsAccepted={handleUnmarkAsAccepted}
         />
       ))}
     </div>
