@@ -1,6 +1,5 @@
-import { boardList } from "@/lib/boards"
 import { updateTokenLifetime } from "@/lib/firebase/firestore"
-import { getPostsByBoard, getPostsFeed, PaginatedResult } from "@/lib/firebase/posts"
+import { getPostsFeed, PaginatedResult } from "@/lib/firebase/posts"
 import { Post } from "@/lib/models"
 import { getAuthUser } from "@/lib/user"
 import { TOKEN_EXPIRY_DURATION } from "@/lib/utils"
@@ -11,10 +10,8 @@ import { z } from "zod"
 
 export const revalidate = 60
 export const dynamic = "force-dynamic"
-const validBoards = boardList.map(e => e.href) as [string, ...string[]]
 
 const querySchema = z.strictObject({
-  board: z.enum(validBoards).optional().nullable(),
   orderByField: z.enum(["upvotes", "comment_count", "downvotes", "timestamp"]),
   lastDocID: z.string().optional().nullable(),
   limitTo: z.number().min(1).max(10),
@@ -41,13 +38,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Invalid request body: " + result.error.flatten().fieldErrors }, { status: 400 })
     }
 
-    const { board, orderByField, lastDocID, limitTo } = result.data
-    let posts: PaginatedResult<Post>
-    if (board) {
-      posts = await getPostsByBoard(board, orderByField, lastDocID, limitTo)
-    } else {
-      posts = await getPostsFeed(orderByField, lastDocID, limitTo)
-    }
+    const { orderByField, lastDocID, limitTo } = result.data
+    const posts: PaginatedResult<Post> = await getPostsFeed(orderByField, lastDocID, limitTo)
 
     const session = cookies().get("session")
     if (session) {

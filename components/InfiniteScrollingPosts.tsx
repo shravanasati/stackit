@@ -43,7 +43,7 @@ const cachePosts = (posts: PostType[]) => {
 }
 
 export function InfiniteScrollingPosts({
-  boardName,
+  boardName = null,
   data,
 }: InfiniteScrollingPostsProps) {
   const dataObj = JSON.parse(data);

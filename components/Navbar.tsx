@@ -9,7 +9,6 @@ import { User } from "@/lib/user";
 import { logout } from "@/lib/actions/logout";
 import {
   Newspaper,
-  Compass,
   PenTool,
   LogIn,
   LogOut,
@@ -17,7 +16,7 @@ import {
   Bell,
   Dot,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -33,9 +32,7 @@ export function Navbar({ user }: { user: User | null }) {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const sheetLinks = [
     { href: "/", text: "Feed", icon: Newspaper },
-    { href: "/board", text: "Explore", icon: Compass },
     { href: "/create", text: "Post", icon: PenTool },
-    { href: "/notifications", text: "Notifications", icon: Bell },
   ];
   const { notifications, loading, error, unreadCount, setUnreadCount } =
     useNotifications();
