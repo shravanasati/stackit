@@ -1,5 +1,6 @@
-import { Timestamp } from "firebase-admin/firestore";
 import { db } from "@/lib/database/app";
+import { security_logs } from "./schema";
+import { desc } from "drizzle-orm";
 
 interface SecurityLog {
   type_: "admin_login" | "moderation_action"
@@ -7,19 +8,17 @@ interface SecurityLog {
 }
 
 export async function addSecurityLog(log: SecurityLog) {
-  const logID = `${log.type_}_${Date.now()}`;
-  const logRef = db.collection("security_logs").doc(logID);
-
-  await logRef.set({
-    ...log,
-    timestamp: Timestamp.now(),
+  await db.insert(security_logs).values({
+    type_: log.type_,
+    detail: log.detail,
   });
 }
 
 export async function getSecurityLogs() {
-  const logsRef = db.collection("security_logs").orderBy("timestamp", "desc").limit(20);
-  const logsSnap = await logsRef.get();
+  const logs = await db.select()
+    .from(security_logs)
+    .orderBy(desc(security_logs.timestamp))
+    .limit(20);
 
-  const logs = logsSnap.docs.map(doc => doc.data());
   return logs;
 }

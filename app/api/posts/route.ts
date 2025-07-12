@@ -1,9 +1,7 @@
 import { updateTokenLifetime } from "@/lib/database/firestore"
-import { getPostsFeed, PaginatedResult } from "@/lib/database/posts"
-import { Post } from "@/lib/models"
+import { getPostsFeed } from "@/lib/database/posts"
 import { getAuthUser } from "@/lib/user"
 import { TOKEN_EXPIRY_DURATION } from "@/lib/utils"
-import { Timestamp } from "firebase-admin/firestore"
 import { cookies } from "next/headers"
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
@@ -39,12 +37,12 @@ export async function GET(request: NextRequest) {
     }
 
     const { orderByField, lastDocID, limitTo } = result.data
-    const posts: PaginatedResult<Post> = await getPostsFeed(orderByField, lastDocID, limitTo)
+    const posts = await getPostsFeed(orderByField, lastDocID, limitTo)
 
     const session = cookies().get("session")
     if (session) {
       // refresh user token
-      const now = Timestamp.now()
+      const now = new Date()
       updateTokenLifetime(user.token!, now)
 
       cookies().set("session", session.value, {

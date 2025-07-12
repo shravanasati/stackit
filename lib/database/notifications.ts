@@ -1,5 +1,6 @@
-import { Timestamp } from "firebase-admin/firestore";
 import { db } from "./app";
+import { notifications } from "./schema";
+import { eq, count, and } from "drizzle-orm";
 
 export type NotificationType = {
   user: string,
@@ -10,49 +11,39 @@ export type NotificationType = {
 }
 
 export type DBNotificationType = NotificationType & {
-  timestamp: Timestamp,
+  id: number,
+  timestamp: Date,
 }
 
-export async function saveNotifications(notifications: NotificationType[]) {
-  const batch = db.batch();
-  const notificationsRef = db.collection("notifications");
-  notifications.forEach((notification) => {
-    const notificationRef = notificationsRef.doc();
-    batch.set(notificationRef, {
-      ...notification,
-      timestamp: Timestamp.now(),
-    });
-  });
-  await batch.commit();
+export async function saveNotifications(notificationList: NotificationType[]) {
+  if (notificationList.length === 0) return;
+
+  await db.insert(notifications).values(notificationList);
 }
 
 export async function getUnreadNotificationCountByUser(userToken: string) {
-  const unreadCount = await db.collection("notifications").
-    where("user", "==", userToken).
-    where("status", "==", "unread").
-    count().get()
+  const [result] = await db.select({ count: count() })
+    .from(notifications)
+    .where(
+      and(
+        eq(notifications.user, userToken),
+        eq(notifications.status, "unread")
+      )
+    );
 
-  return unreadCount.data().count
+  return result.count;
 }
 
 export async function getNotificationsByUser(userToken: string) {
-  const notificationsRef = db.collection("notifications").where("user", "==", userToken);
-  const notificationsSnap = await notificationsRef.get();
-  const notifications: DBNotificationType[] = [];
-  notificationsSnap.forEach((notification) => {
-    notifications.push(notification.data() as DBNotificationType);
-  });
-  return notifications;
+  const userNotifications = await db.select()
+    .from(notifications)
+    .where(eq(notifications.user, userToken));
+
+  return userNotifications;
 }
 
 export async function markAllNotificationsRead(userToken: string) {
-  const notificationsRef = db.collection("notifications")
-  const userNotifs = notificationsRef.where("user", "==", userToken);
-  const userNotifsSnap = await userNotifs.get();
-  const batch = db.batch();
-  userNotifsSnap.forEach((doc) => {
-    batch.update(doc.ref, { status: "read" });
-  });
-
-  await batch.commit();
+  await db.update(notifications)
+    .set({ status: "read" })
+    .where(eq(notifications.user, userToken));
 }

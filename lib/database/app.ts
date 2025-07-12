@@ -1,10 +1,13 @@
-import { initializeApp, getApps, cert } from "firebase-admin/app";
-import { firebaseConfig } from "./config";
-import { getFirestore } from "firebase-admin/firestore";
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import * as schema from './schema';
 
-export const firebaseApp =
-  getApps().length === 0 ? initializeApp({
-    credential: cert(firebaseConfig),
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  }) : getApps()[0];
-export const db = getFirestore(firebaseApp);
+// Create the connection
+const connectionString = process.env.DATABASE_URL ||
+  `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
+
+const client = postgres(connectionString, {
+  ssl: process.env.DB_SSL === 'true' ? 'require' : false
+});
+
+export const db = drizzle(client, { schema });

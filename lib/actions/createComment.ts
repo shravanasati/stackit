@@ -4,7 +4,6 @@ import { z } from "zod"
 import { getAuthUser } from "@/lib/user"
 import { addComment } from "@/lib/database/comments"
 import { convertTimestamp } from "@/lib/utils"
-import { Comment } from "@/lib/models"
 import { createUserNotification } from "@/lib/notifications"
 
 const createCommentSchema = z.strictObject({
@@ -54,8 +53,12 @@ export async function createComment(values: z.infer<typeof createCommentSchema>)
     if (!newComment) {
       return { success: false, errors: { server: "An error occurred. Please try again later." } }
     }
-    const returnedComment = newComment as unknown as Comment & { timestamp: string }
-    returnedComment.timestamp = convertTimestamp(newComment.timestamp)
+
+    // Convert the comment for return with string timestamp
+    const returnedComment = {
+      ...newComment,
+      timestamp: convertTimestamp(newComment.timestamp)
+    }
     createUserNotification(data.postID, newComment)
 
     return { success: true, data: returnedComment }

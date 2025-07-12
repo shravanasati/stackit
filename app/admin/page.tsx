@@ -30,7 +30,9 @@ export default async function AdminPage() {
   ]);
 
   // sort logs by timestamp
-  securityLogs.sort((a, b) => b.timestamp - a.timestamp);
+  securityLogs.sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
 
   const rawLogs = securityLogs as RawSecurityLog[];
 
@@ -42,9 +44,9 @@ export default async function AdminPage() {
 
   const formattedReports = unresolvedReports.map((report) => ({
     ...report,
-    createdAt: formatDate(convertTimestamp(report.createdAt)),
-    resolvedAt: report.resolvedAt
-      ? formatDate(convertTimestamp(report.resolvedAt))
+    createdAt: formatDate(convertTimestamp(report.created_at)),
+    resolvedAt: report.resolved_at
+      ? formatDate(convertTimestamp(report.resolved_at))
       : null,
   }));
 

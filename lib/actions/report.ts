@@ -19,13 +19,13 @@ async function _reportGeneric(postID: string, flag: string, type: "post" | "comm
     }
 
     const newReport: ReportType = {
-      postID: postID,
+      post_id: postID,
       flag: flag,
       status: "pending"
     }
 
     if (type === "comment") {
-      newReport.commentID = commentID
+      newReport.comment_id = commentID
     }
 
     await reportContent(newReport)

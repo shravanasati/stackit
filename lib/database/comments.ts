@@ -1,73 +1,67 @@
-import type { Comment as CommentType, DBComment, Gif } from "@/lib/models";
+import type { DBComment, Gif } from "@/lib/models";
 import { db } from "./app";
-import { Timestamp, FieldValue } from "firebase-admin/firestore";
+import { comments, posts } from "./schema";
 import { generateCommentID } from "../utils";
+import { eq, and, ne, sql } from "drizzle-orm";
 
-export async function addComment(userToken: string, postID: string, commentBody: string, level: number, parentID: string | null, gif? : Gif) {
+export async function addComment(userToken: string, postID: string, commentBody: string, level: number, parentID: string | null, gif?: Gif) {
   try {
-    const batch = db.batch()
     const commentID = generateCommentID()
-    const comment: CommentType = {
+    const comment = {
       id: commentID,
+      post_id: postID,
       body: commentBody,
       level: level,
       upvotes: 0,
       downvotes: 0,
       parent_id: parentID,
-      moderation_status: "pending",
+      moderation_status: "pending" as const,
       author: userToken,
-    }
-    if (gif) {
-      comment.gif = gif
-    }
+      gif: gif || null,
+    };
 
-    const postRef = db.collection("posts").doc(postID)
-    const commentsRef = db.collection("posts").doc(postID).collection("comments").doc(commentID)
+    return await db.transaction(async (tx) => {
+      // Insert comment
+      const [insertedComment] = await tx.insert(comments).values(comment).returning();
 
-    const dbComment = {
-      ...comment,
-      timestamp: Timestamp.now()
-    }
-    batch.set(commentsRef, dbComment)
+      // Update post comment count
+      await tx.update(posts)
+        .set({ comment_count: sql`${posts.comment_count} + 1` })
+        .where(eq(posts.id, postID));
 
-    batch.update(postRef, {
-      comment_count: FieldValue.increment(1)
-    })
-
-    await batch.commit()
-    return dbComment
+      return insertedComment;
+    });
   } catch (e) {
     console.error("error in adding comment", e)
   }
-
 }
 
 export async function getPostComments(postID: string) {
-  const commentsRef = db.collection("posts").
-    doc(postID).
-    collection("comments").
-    where("moderation_status", "!=", "rejected")
+  const postComments = await db.select()
+    .from(comments)
+    .where(and(
+      eq(comments.post_id, postID),
+      ne(comments.moderation_status, "rejected")
+    ));
 
-  const commentsSnap = await commentsRef.get()
-
-  const comments: DBComment[] = []
-  commentsSnap.forEach((comment) => {
-    comments.push(comment.data() as DBComment)
-  })
-
-  return comments
+  return postComments;
 }
 
 async function voteComment(postID: string, commentID: string, undo: boolean, field: "upvotes" | "downvotes") {
-  const commentRef = db.collection("posts").doc(postID).collection("comments").doc(commentID)
   try {
-    await commentRef.update({
-      [field]: FieldValue.increment(undo ? -1 : 1)
-    })
-    return true
+    const increment = undo ? -1 : 1;
+    await db.update(comments)
+      .set({
+        [field]: sql`${comments[field]} + ${increment}`
+      })
+      .where(and(
+        eq(comments.id, commentID),
+        eq(comments.post_id, postID)
+      ));
+    return true;
   } catch (e) {
-    console.error(e)
-    return false
+    console.error(e);
+    return false;
   }
 }
 
@@ -81,37 +75,48 @@ export async function downvoteComment(postID: string, commentID: string, undo: b
 
 export async function updateCommentModerationStatus(postID: string, commentID: string, newStatus: "approved" | "rejected") {
   try {
-    const batch = db.batch()
-    const postRef = db.collection("posts").doc(postID)
-    const commentRef = postRef.collection("comments").doc(commentID)
-    batch.update(commentRef, { "moderation_status": newStatus })
-    if (newStatus === "rejected") {
-      batch.update(postRef, { "comment_count": FieldValue.increment(-1) })
-    }
-    await batch.commit()
-    return true
+    return await db.transaction(async (tx) => {
+      // Update comment moderation status
+      await tx.update(comments)
+        .set({ moderation_status: newStatus })
+        .where(and(
+          eq(comments.id, commentID),
+          eq(comments.post_id, postID)
+        ));
+
+      // If rejected, decrement post comment count
+      if (newStatus === "rejected") {
+        await tx.update(posts)
+          .set({ comment_count: sql`${posts.comment_count} - 1` })
+          .where(eq(posts.id, postID));
+      }
+    });
+    return true;
   } catch (e) {
-    console.error("error in update comment moderation status", e)
-    return false
+    console.error("error in update comment moderation status", e);
+    return false;
   }
 }
 
 export async function getParentComments(postID: string, parentID: string | null) {
-  const commentsRef = db.collection("posts").
-    doc(postID).
-    collection("comments")
+  const authors: DBComment[] = [];
+  let currentCommentID = parentID;
 
-  let currentCommentID = parentID
-  const authors: DBComment[] = []
   while (currentCommentID) {
-    const commentSnap = await commentsRef.doc(currentCommentID).get()
-    const comment = commentSnap.data() as DBComment
-    if (comment.author) {
+    const [comment] = await db.select()
+      .from(comments)
+      .where(and(
+        eq(comments.id, currentCommentID),
+        eq(comments.post_id, postID)
+      ))
+      .limit(1);
+
+    if (comment?.author) {
       // only include comments that have an author
-      authors.push(comment)
+      authors.push(comment);
     }
-    currentCommentID = comment.parent_id
+    currentCommentID = comment?.parent_id || null;
   }
 
-  return authors
+  return authors;
 }

@@ -1,81 +1,81 @@
-import { Timestamp } from "firebase-admin/firestore";
 import { db } from "@/lib/database/app";
+import { otp, tokens } from "./schema";
 import { hash } from "../crypt";
+import { eq, count } from "drizzle-orm";
 
 export type OTPEntry = {
   otp: string;
-  timestamp: Timestamp;
+  timestamp: Date;
 };
 
-export async function saveOTP(email: string, otp: string) {
-  const otpRef = db.collection("otp").doc(email)
-  await otpRef.set({
-    otp: hash(otp),
-    timestamp: Timestamp.now(),
+export async function saveOTP(email: string, otpValue: string) {
+  await db.insert(otp).values({
+    email: email,
+    otp: hash(otpValue),
+  }).onConflictDoUpdate({
+    target: otp.email,
+    set: {
+      otp: hash(otpValue),
+      timestamp: new Date(),
+    }
   });
-
 }
 
 export async function getOTP(email: string) {
-  const otpRef = db.collection("otp").doc(email)
-  const otpSnap = await otpRef.get()
+  const [otpEntry] = await db.select()
+    .from(otp)
+    .where(eq(otp.email, email))
+    .limit(1);
 
-  if (otpSnap.exists) {
-    return otpSnap.data() as OTPEntry;
-  }
-
-  return null;
+  return otpEntry || null;
 }
 
 export async function deleteOTP(email: string) {
-  const otpRef = db.collection("otp").doc(email)
-  await otpRef.delete();
+  await db.delete(otp).where(eq(otp.email, email));
 }
 
 export async function storeToken(token: string, isAdmin: boolean, username: string, email: string) {
-  const tokenRef = db.collection("tokens").doc(token);
-  await tokenRef.set({
+  await db.insert(tokens).values({
     token: token,
     role: isAdmin ? "admin" : "user",
     username: username,
     email: email,
-    timestamp: Timestamp.now(),
+  }).onConflictDoUpdate({
+    target: tokens.token,
+    set: {
+      role: isAdmin ? "admin" : "user",
+      username: username,
+      email: email,
+      timestamp: new Date(),
+    }
   });
 }
 
 export async function deleteToken(token: string) {
-  const tokenRef = db.collection("tokens").doc(token);
-  await tokenRef.delete();
+  await db.delete(tokens).where(eq(tokens.token, token));
 }
 
 export async function getToken(token: string) {
-  const tokenRef = db.collection("tokens").doc(token);
-  const tokenSnap = await tokenRef.get();
+  const [tokenEntry] = await db.select()
+    .from(tokens)
+    .where(eq(tokens.token, token))
+    .limit(1);
 
-  if (tokenSnap.exists) {
-    return tokenSnap.data();
-  }
-
-  return null;
+  return tokenEntry || null;
 }
 
-export async function updateTokenLifetime(token: string, newTimestamp: Timestamp) {
-  const tokenRef = db.collection("tokens").doc(token);
-  await tokenRef.update({
-    timestamp: newTimestamp,
-  });
+export async function updateTokenLifetime(token: string, newTimestamp: Date) {
+  await db.update(tokens)
+    .set({ timestamp: newTimestamp })
+    .where(eq(tokens.token, token));
 }
 
 export async function getTokenCount() {
-  const tokenRef = db.collection("tokens");
-  const tokenSnap = await tokenRef.count().get();
-
-  return tokenSnap.data().count;
+  const [result] = await db.select({ count: count() }).from(tokens);
+  return result.count;
 }
 
 export async function getOTPCount() {
-  const otpRef = db.collection("otp");
-  const otpSnap = await otpRef.count().get();
-
-  return otpSnap.data().count;
+  const [result] = await db.select({ count: count() }).from(otp);
+  return result.count;
 }

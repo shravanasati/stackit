@@ -11,10 +11,10 @@ export async function GET() {
     }
 
     const notifications = await getNotificationsByUser(user.token!);
-    notifications.sort((a, b) => b.timestamp.toMillis() - a.timestamp.toMillis());
+    notifications.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
     const dateFormattedNotifs = notifications.map((notif) => ({
       ...notif,
-      timestamp: getAgoDuration(notif.timestamp.toDate()),
+      timestamp: getAgoDuration(notif.timestamp),
     }));
 
     markAllNotificationsRead(user.token!);

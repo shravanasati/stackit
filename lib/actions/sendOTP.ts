@@ -51,7 +51,7 @@ export async function sendOTP(values: z.infer<typeof sendOTPSchema>) {
     const otpExists = await getOTP(result.data.email)
     if (otpExists) {
       // rate limit OTPs to 1 per minute
-      const expirationTime = otpExists.timestamp.toMillis() + 60000
+      const expirationTime = otpExists.timestamp.getTime() + 60000
       if (expirationTime > Date.now()) {
         return { success: false, errors: { email: "An OTP has already been sent to this email. Please check your email." }, retryAfter: new Date(expirationTime) }
       }

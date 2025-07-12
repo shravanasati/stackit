@@ -34,7 +34,7 @@ export async function signin(values: z.infer<typeof OTPSchema>) {
   if (!otpEntry) {
     return { success: false, error: "OTP not found" }
   }
-  const expirationTime = otpEntry.timestamp.toMillis() + 10 * 60 * 1000 // 10 minutes
+  const expirationTime = otpEntry.timestamp.getTime() + 10 * 60 * 1000 // 10 minutes
   if (expirationTime < Date.now()) {
     return { success: false, error: "OTP expired. Please request a new one." }
   }

@@ -1,39 +1,47 @@
-'use client'
+"use client";
 
-import { useState, useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
-export type FirestoreTimestamp = {
-  seconds: number
-  nanoseconds: number
-}
+import { useState, useMemo } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export type RawSecurityLog = {
-  type_: string
-  timestamp: FirestoreTimestamp
-  detail: string
-}
-
+  type_: string;
+  timestamp: Date;
+  detail: string;
+};
 
 export type SecurityLogType = {
-  type_: string
-  timestamp: string
-  detail: string
-}
+  type_: string;
+  timestamp: string;
+  detail: string;
+};
 
 export function SecurityLogs({ logs = [] }: { logs?: SecurityLogType[] }) {
-  const [filterType, setFilterType] = useState<string>('all')
+  const [filterType, setFilterType] = useState<string>("all");
 
   const uniqueTypes = useMemo(() => {
-    return ['all', ...Array.from(new Set(logs.map(log => log.type_)))]
-  }, [logs])
+    return ["all", ...Array.from(new Set(logs.map((log) => log.type_)))];
+  }, [logs]);
 
   const filteredLogs = useMemo(() => {
-    return filterType === 'all' ? logs : logs.filter(log => log.type_ === filterType)
-  }, [logs, filterType])
-
+    return filterType === "all"
+      ? logs
+      : logs.filter((log) => log.type_ === filterType);
+  }, [logs, filterType]);
 
   return (
     <Card className="w-fit">
@@ -46,7 +54,7 @@ export function SecurityLogs({ logs = [] }: { logs?: SecurityLogType[] }) {
           <SelectContent>
             {uniqueTypes.map((type) => (
               <SelectItem key={type} value={type}>
-                {type === 'all' ? 'All Types' : type}
+                {type === "all" ? "All Types" : type}
               </SelectItem>
             ))}
           </SelectContent>
@@ -75,5 +83,6 @@ export function SecurityLogs({ logs = [] }: { logs?: SecurityLogType[] }) {
           </Table>
         </div>
       </CardContent>
-    </Card>)
+    </Card>
+  );
 }
