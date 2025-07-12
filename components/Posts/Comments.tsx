@@ -28,6 +28,7 @@ import { getAgoDuration } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import { trimBodyContent } from "./Post";
 import rehypeRaw from "rehype-raw";
+import Link from "next/link";
 
 type ReturnedComment = CommentType & { timestamp: string };
 
@@ -410,7 +411,9 @@ export default function Comments({
         toast({
           title: "Reply couldn't be submitted",
           description:
-            "There was an error submitting the reply, please ensure that it does not exceed 500 characters",
+            resp.errors!.body ||
+            (resp.errors as any)?.server ||
+            "An unknown error occurred",
           variant: "destructive",
         });
         return;
@@ -440,8 +443,17 @@ export default function Comments({
         toast({
           title: "Comment could not be posted",
           description:
-            "Your comment could not be posted, please ensure that it does not exceed 500 characters",
+            resp.errors!.body ||
+            (resp.errors as any)?.server ||
+            "An unknown error occurred",
           variant: "destructive",
+          action: (
+            <Link href="/login">
+              <Button variant="outline" className="hover:bg-primary/5">
+                Login
+              </Button>
+            </Link>
+          ),
         });
         return;
       }

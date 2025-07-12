@@ -51,7 +51,7 @@ export function Navbar({ user }: { user: User | null }) {
   return (
     <nav className="p-4 flex justify-between items-center">
       {/* logo */}
-      <Link className="flex items-center space-x-2" href="/">
+      <Link className="flex items-center space-x-2" href="/feed">
         <SvgLogo />
         <span className="text-2xl font-bold hover:text-primary/90">
           StackIt
