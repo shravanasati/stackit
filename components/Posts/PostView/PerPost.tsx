@@ -94,9 +94,9 @@ export default function PerPost({ postID }: { postID: string }) {
     <Card className="w-full flex flex-col border-0  bg-primary/[0.015] rounded-md">
       <CardHeader className="relative space-y-1 md:py-3 md:px-4 px-3 py-2">
         <div className="flex flex-col gap-2">
-          <div className="flex">
+          <div className="flex gap-2">
             <MoveLeft
-              className="size-6 text-primary m-1 mr-2 hover:bg-gray-500"
+              className="size-8 text-primary p-2 rounded-full hover:bg-primary/40 transition-colors duration-200 cursor-pointer"
               onClick={() => {
                 router.back();
               }}

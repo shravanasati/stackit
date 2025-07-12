@@ -6,9 +6,6 @@ export default function AnimatedLoader() {
         <div className="relative w-16 h-16">
           <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary border-r-primary animate-spin"></div>
         </div>
-        <div className="text-foreground text-2xl font-semibold">
-          Loading....
-        </div>
       </div>
     </div>
   );

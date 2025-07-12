@@ -93,7 +93,7 @@ export function Navbar({ user }: { user: User | null }) {
                   </div>
                 )}
                 {error && <p>Error fetching notifications</p>}
-                {[...notifications, ...notifications].map((notif, idx) => (
+                {notifications.map((notif, idx) => (
                   <Link
                     href={notif.link}
                     key={idx}
