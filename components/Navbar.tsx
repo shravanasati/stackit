@@ -122,7 +122,7 @@ export function Navbar({ user }: { user: User | null }) {
             <Button
               variant="ghost"
               size="icon"
-              className="text-primaryi hover:bg-primary/40"
+              className="text-primary hover:bg-primary/10 hover:text-primary"
             >
               <Menu className="h-6 w-6" />
               <span className="sr-only">Open menu</span>

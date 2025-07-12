@@ -17,8 +17,7 @@ export default function Section1() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-      >
-      </motion.div>
+      ></motion.div>
       <HeroTitle />
       <HeroDescription />
       <motion.div
@@ -46,8 +45,9 @@ function HeroTitle() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.7 }}
     >
-      <h1 className="text-5xl md:text-7xl font-extrabold md:tracking-widest bg-gradient-to-b from-yellow-500 to-orange-200 bg-clip-text text-transparent text-center px-4 ">
-        Welcome to StackIt!
+      <h1 className="text-5xl md:text-7xl font-extrabold md:tracking-tighter bg-gradient-to-b from-yellow-500 to-orange-200 bg-clip-text text-transparent text-center px-4 ">
+        Ask, Answer <br />
+        Elevate Your Code.
       </h1>
     </motion.div>
   );
@@ -61,8 +61,11 @@ function HeroDescription() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.7, duration: 0.7 }}
     >
-      <div>Your go-to platform to ask about your daily developemnt quests</div>
-      <div>Questions, Answers, Upvotes, Downvotes</div>
+      <div>StackIt — Your Q&amp;A Platform for Developers</div>
+      <div className="max-w-96">
+        Ask questions, give answers, and connect with a community that helps you
+        grow.
+      </div>
     </motion.div>
   );
 }
