@@ -30,6 +30,7 @@ import { trimBodyContent } from "./Post";
 import rehypeRaw from "rehype-raw";
 import { EditorComp } from "../PostCreator";
 import AnimatedLoader from "../AnimatedLoader";
+import Link from "next/link";
 
 type ReturnedComment = CommentType & { timestamp: string };
 
