@@ -35,9 +35,9 @@ function sanitizeNextURL(nextURL: string): string {
       // The entire URL is already encoded as a single value, just decode it
       return decodeURIComponent(nextURL);
     }
-    return "/";
+    return "/feed";
   } catch {
-    return "/";
+    return "/feed";
   }
 }
 
@@ -46,7 +46,7 @@ export function OTPPage() {
   const searchParams = useSearchParams();
   const allParams = Object.fromEntries(searchParams.entries());
   delete allParams.next;
-  let nextURL = "/";
+  let nextURL = "/feed";
   if (searchParams.get("next")) {
     // merge all search params
     const sp = new URLSearchParams(

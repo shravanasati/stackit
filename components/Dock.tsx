@@ -12,7 +12,7 @@ type DockIconProps = {
 };
 
 const dockIcons = [
-  { href: "/", tooltipTitle: "Feed", icon: HomeIcon },
+  { href: "/feed", tooltipTitle: "Feed", icon: HomeIcon },
   { href: "/create", tooltipTitle: "Post", icon: Plus },
 ];
 

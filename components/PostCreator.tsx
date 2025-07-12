@@ -49,8 +49,20 @@ interface FormData {
   body: string;
   tags: Tag[];
 }
-
-export function PostCreator({ role }: { role: string }) {
+type users = {
+  token: string;
+  role: "user" | "admin";
+  username: string;
+  email: string;
+  timestamp: Date;
+}[];
+export function PostCreator({
+  role,
+  usernames,
+}: {
+  role: string;
+  usernames: users;
+}) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();

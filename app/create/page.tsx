@@ -1,6 +1,7 @@
 import { Dock } from "@/components/Dock";
 import { PostCreator } from "@/components/PostCreator";
 import { Unauthorized } from "@/components/Unauthorized";
+import { getAllUsers } from "@/lib/database/firestore";
 import { getAuthUser } from "@/lib/user";
 
 export const metadata = {
@@ -14,10 +15,10 @@ export default async function CreatePost() {
   if (!user) {
     return <Unauthorized />;
   }
-
+  const usernames = await getAllUsers();
   return (
     <>
-      <PostCreator role={user.role ?? "user"} /> <Dock />
+      <PostCreator role={user.role ?? "user"} usernames={usernames} /> <Dock />
     </>
   );
 }
