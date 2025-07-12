@@ -78,7 +78,7 @@ export function BroadcastNotificationForm() {
     <Card className="w-full max-w-2xl">
       <CardHeader>
         <CardTitle>Broadcast Notification</CardTitle>
-        <CardDescription>Create and send a broadcast notification to all users.</CardDescription>
+        <CardDescription>Create and broadcast a notification to all users.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

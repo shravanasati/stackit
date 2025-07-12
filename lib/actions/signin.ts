@@ -55,7 +55,7 @@ export async function signin(values: z.infer<typeof OTPSchema>) {
   if (isAdmin) {
     await addSecurityLog({
       type_: "admin_login",
-      detail: `Admin ${result.data.email.split(".")[0]} logged in`,
+      detail: `Admin ${result.data.email.split("@")[0]} logged in`,
     })
   }
 
