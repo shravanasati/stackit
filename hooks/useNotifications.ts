@@ -19,7 +19,7 @@ export function useNotifications() {
         setNotifications(data);
         setUnreadCount(data.filter((n: DBNotificationType) => n.status === "unread").length);
       } catch (error) {
-        setError(error);
+        setError(error as Error);
       } finally {
         setLoading(false);
       }

@@ -10,7 +10,7 @@ export type NotificationType = {
 }
 
 export type DBNotificationType = NotificationType & {
-  timestamp: string,
+  timestamp: Timestamp,
 }
 
 export async function saveNotifications(notifications: NotificationType[]) {
