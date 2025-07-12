@@ -1,0 +1,1 @@
+ALTER TABLE "comments" ADD COLUMN "is_accepted" integer DEFAULT 0 NOT NULL;
