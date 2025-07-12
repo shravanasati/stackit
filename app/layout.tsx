@@ -7,12 +7,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { ThemeProvider } from "@/lib/ThemeContext";
 
-const APP_DEFAULT_TITLE = "StackIt";
+const APP_DEFAULT_TITLE = "StackIt's PWA";
 
 
 export const metadata: Metadata = {
-  title: "EveryNyan",
-  description: "It's for everyone cuz it's EveryNyan",
+  title: "StackIt",
+  description: "Your one and only QnA forum, where you can ask questions and get answers.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -22,17 +22,17 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    title: "EveryNyan",
-    description: "Your anonymous haven for rants and gossip, confessions and spilling the tea! Join us to share your thoughts and secrets without judgment.",
+    title: "StackIt",
+    description: "Your one and only QnA forum, where you can ask questions and get answers.",
     images: [
       {
         url: "/mail-logo.png",
         width: 434,
         height: 152,
-        alt: "EveryNyan",
+        alt: "StackIt",
       },
     ],
-    url: "https://everynyan.tech",
+    url: "https://stackit.vercel.app",
   }
 };
 
@@ -72,6 +72,7 @@ export default async function RootLayout({
           <Navbar user={user} />
           {children}
           <Toaster />
+
         </body>
       </ThemeProvider>
 

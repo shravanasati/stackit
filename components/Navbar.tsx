@@ -49,7 +49,7 @@ export function Navbar({ user }: { user: User | null }) {
       <Link className="flex items-center space-x-2" href="/">
         <SvgLogo />
         <span className="text-2xl font-bold hover:text-primary/90">
-          EveryNyan
+          StackIt
         </span>
       </Link>
 
@@ -107,22 +107,6 @@ export function Navbar({ user }: { user: User | null }) {
             </div>
           </SheetContent>
         </Sheet>
-
-        {/* {loggedIn ? (
-          <button
-            onClick={handleLogout}
-            className="font-semibold px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200 hidden md:inline"
-          >
-            Log Out
-          </button>
-        ) : (
-          <Link
-            href="/login"
-            className="font-semibold px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200 hidden md:inline"
-          >
-            Log In
-          </Link>
-        )} */}
       </div>
     </nav>
   );
