@@ -4,7 +4,7 @@ import { LoginPage } from "@/components/LoginPage";
 
 export const metadata = {
   title: "Login",
-  description: "Login to everynyan",
+  description: "Login to stackit",
 };
 
 export default async function Login() {

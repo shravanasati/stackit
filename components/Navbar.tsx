@@ -23,10 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { useNotifications } from "@/hooks/useNotifications";
-import AnimatedLoader from "@/components/AnimatedLoader";
 
 export function Navbar({ user }: { user: User | null }) {
   const pathname = usePathname();
@@ -60,7 +57,7 @@ export function Navbar({ user }: { user: User | null }) {
       <Link className="flex items-center space-x-2" href="/">
         <SvgLogo />
         <span className="text-2xl font-bold hover:text-primary/90">
-          EveryNyan
+          StackIt
         </span>
       </Link>
 

@@ -185,7 +185,7 @@ export default function ReportContent({
         <p className="text-xs sm:text-sm mt-4 text-muted-foreground">
           In case of emergency contact us on &nbsp;
           <Link
-            href="https://instagram.com/everynyan.tech"
+            href="https://instagram.com/stackit.tech"
             className="text-primary/45 hover:underline"
           >
             Instagram

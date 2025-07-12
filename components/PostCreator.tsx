@@ -18,9 +18,6 @@ import { TagInput } from 'emblor';
 import { Tag } from "@/lib/firebase/posts";
 
 
- 
-
-
 const EditorComp = dynamic(() => import("@/components/MdEditor"), {
   ssr: true,
 });

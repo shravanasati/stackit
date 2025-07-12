@@ -13,9 +13,9 @@ export async function sendOTPEmail(email: string, otp: string) {
   try {
     // can also extract data from here
     const { error } = await resend.emails.send({
-      from: 'Everynyan <no-reply@emails.everynyan.tech>',
+      from: 'stackit <no-reply@emails.everynyan.tech>',
       to: [email],
-      subject: 'OTP for logging into Everynyan',
+      subject: 'OTP for logging into StackIt',
       react: OTPEmailTemplate({ name, otp }),
     });
 

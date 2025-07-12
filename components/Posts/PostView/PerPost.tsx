@@ -27,15 +27,13 @@ interface PostData {
   downVotes: number;
 }
 
-export default function PerPost({
-  postID
-}: { postID: string }) {
+export default function PerPost({ postID }: { postID: string }) {
   const [postData, setPostData] = useState<PostData | null>(null);
   const [isNotFound, setIsNotFound] = useState(false);
   const [isForbidden, setIsForbidden] = useState(false);
   const [error, setError] = useState("");
   const [postSlug, setPostSlug] = useState("");
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,7 +60,9 @@ export default function PerPost({
             upVotes: fetchedData.data!.upvotes,
             downVotes: fetchedData.data!.downvotes,
           });
-          setPostSlug(getPostSlug(fetchedData.data!.id, fetchedData.data!.title));
+          setPostSlug(
+            getPostSlug(fetchedData.data!.id, fetchedData.data!.title)
+          );
           sessionStorage.setItem(postID, JSON.stringify(fetchedData.data));
         } else if (fetchedData.status === 404) {
           setIsNotFound(true);
@@ -73,17 +73,17 @@ export default function PerPost({
           setError("An error occurred while fetching the post");
         }
       }
-    }
+    };
 
-    fetchData()
-  }, [postID])
+    fetchData();
+  }, [postID]);
 
   if (isNotFound) {
-    return <NotFound />
+    return <NotFound />;
   } else if (isForbidden) {
-    return <Unauthorized />
+    return <Unauthorized />;
   } else if (error) {
-    return <div>{error}</div>
+    return <div>{error}</div>;
   }
 
   if (!postData) {
@@ -94,24 +94,30 @@ export default function PerPost({
     <Card className="w-full flex flex-col border-0  bg-primary/[0.015] rounded-md">
       <CardHeader className="relative space-y-1 md:py-3 md:px-4 px-3 py-2">
         <div className="flex flex-col gap-2">
-        <div className="flex">
-          <MoveLeft className="size-6 text-primary m-1 mr-2 hover:bg-gray-500" onClick={() => {
-            router.back()
-          }} />
-          <CardTitle className="text-xl sm:text-2xl font-bold break-words md:max-w-fit max-w-80">
-            {postData.title}
-          </CardTitle>
-        </div>
+          <div className="flex">
+            <MoveLeft
+              className="size-6 text-primary m-1 mr-2 hover:bg-gray-500"
+              onClick={() => {
+                router.back();
+              }}
+            />
+            <CardTitle className="text-xl sm:text-2xl font-bold break-words md:max-w-fit max-w-80">
+              {postData.title}
+            </CardTitle>
+          </div>
           <span className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors duration-200 ml-8">
             <Link href={`/board/${postData.boardName}`}>
               {postData.boardName}
             </Link>
           </span>
         </div>
-        <ReportContent postID={postData.id} className="absolute top-6 right-5" />
+        <ReportContent
+          postID={postData.id}
+          className="absolute top-6 right-5"
+        />
       </CardHeader>
       <CardContent className="333">
-        <div className="mb-3 sm:mb-4 h-fit overflow-y-scroll py-6 px-2 everynyan-scroll rounded-md bg-primary/[0.025]">
+        <div className="mb-3 sm:mb-4 h-fit overflow-y-scroll py-6 px-2 stackit-scroll rounded-md bg-primary/[0.025]">
           <ReactMarkdown
             components={{
               a: (props) => <a className="text-primary" {...props} />,
@@ -122,7 +128,11 @@ export default function PerPost({
           </ReactMarkdown>
         </div>
         <div className="flex flex-row gap-2 items-center">
-          <VoteCounter upVotes={postData.upVotes} downVotes={postData.downVotes} postID={postData.id} />
+          <VoteCounter
+            upVotes={postData.upVotes}
+            downVotes={postData.downVotes}
+            postID={postData.id}
+          />
           <Share postLink={postSlug} />
         </div>
       </CardContent>

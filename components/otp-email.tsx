@@ -4,7 +4,7 @@ interface OTPEmailProps {
 }
 
 export function OTPEmailTemplate({ name, otp }: OTPEmailProps) {
-  const logoURL = "https://everynyan.tech/mail_logo.png";
+  const logoURL = "https://stackit.tech/mail_logo.png";
   return (
     <div
       style={{
@@ -35,7 +35,7 @@ export function OTPEmailTemplate({ name, otp }: OTPEmailProps) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={logoURL}
-              alt="Everynyan Logo"
+              alt="stackit Logo"
               style={{ maxWidth: "200px", height: "auto" }}
             />
           </td>
@@ -61,7 +61,7 @@ export function OTPEmailTemplate({ name, otp }: OTPEmailProps) {
                 textAlign: "center",
               }}
             >
-              Welcome to Everynyan! Here&apos;s your one-time password (OTP) to
+              Welcome to stackit! Here&apos;s your one-time password (OTP) to
               complete your login:
             </p>
             <div
@@ -108,7 +108,7 @@ export function OTPEmailTemplate({ name, otp }: OTPEmailProps) {
             }}
           >
             <p style={{ color: "#666666", fontSize: "14px", margin: "0" }}>
-              &copy; {new Date().getFullYear()} Everynyan. All rights reserved.
+              &copy; {new Date().getFullYear()} stackit. All rights reserved.
             </p>
           </td>
         </tr>

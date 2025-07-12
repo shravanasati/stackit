@@ -1,4 +1,3 @@
-//import BoardHeader from "@/components/BoardHeader";
 import { Dock } from "@/components/Dock";
 import Footer from "@/components/Footer";
 import BlobGradient from "@/components/Gradients/GradientBackground";
@@ -22,7 +21,6 @@ export default async function Home() {
     const data = JSON.stringify(resp);
     return (
       <div className="min-h-screen bg-background relative">
-        <BoardHeader />
         <Dock />
         <main className="container mx-auto px-4 py-8">
           <div className="max-w-3xl mx-auto space-y-6 everynyan-scroll">
