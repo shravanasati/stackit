@@ -14,7 +14,7 @@ import { convertTimestamp, formatDate } from "@/lib/utils";
 
 export const metadata = {
   title: "Admin Page",
-  description: "Admin page for EveryNyan",
+  description: "Admin page for stackit",
 };
 
 export default async function AdminPage() {

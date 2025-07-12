@@ -5,7 +5,7 @@ import { getAuthUser } from "@/lib/user";
 
 export const metadata = {
   title: "Create Post",
-  description: "Create a post on everynyan",
+  description: "Create a post on stackit",
 };
 
 export default async function CreatePost() {

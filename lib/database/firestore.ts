@@ -80,6 +80,19 @@ export async function getOTPCount() {
   return result.count;
 }
 
+export async function getUserFromToken(token: string) {
+  const tokenEntry = await getToken(token);
+  if (!tokenEntry) {
+    return null;
+  }
+  return {
+    token: tokenEntry.token,
+    role: tokenEntry.role,
+    username: tokenEntry.username,
+    email: tokenEntry.email,
+  };
+}
+
 export async function getAllUsers() {
   const users = await db.select().from(tokens);
   return users;
