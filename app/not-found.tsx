@@ -8,7 +8,7 @@ export default function NotFound() {
       <div className="text-center max-w-md">
         <div className="relative mx-auto mb-4">
           <Image
-            src=""
+            src="/not-found-v1.png"
             alt="404 Not Found"
             width={686}
             height={386}

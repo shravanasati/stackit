@@ -11,10 +11,10 @@ export function Unauthorized() {
         <div className="space-y-2 sm:space-y-4">
           <Image
             className="mx-auto text-muted-foreground"
-            src="/frown.png"
+            src="/not_authorised.png"
             width={128}
             height={128}
-            alt="crying chiyo chan"
+            alt="not-authorized"
           />
           <h1 className="text-2xl sm:text-4xl font-bold tracking-tighter">
             403 - Not Authorized
@@ -23,7 +23,7 @@ export function Unauthorized() {
             Sorry, you don&apos;t have permission to access this page.
           </p>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Join the fun.
+            Join StackIt.
           </p>
         </div>
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 justify-center">
