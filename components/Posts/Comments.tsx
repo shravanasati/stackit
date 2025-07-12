@@ -11,6 +11,7 @@ import {
   PlusCircleIcon,
   Spline,
   X,
+  User,
 } from "lucide-react";
 import { useState, useCallback, useMemo } from "react";
 import { Comment as CommentType, Gif } from "@/lib/models";
@@ -22,6 +23,7 @@ import { SortDropdown } from "../SortDropdown";
 import { IGif } from "@giphy/js-types";
 import { GiphyPicker } from "./GiphyPicker";
 import { GiphyAttribution } from "@/components/GiphyAttribution";
+import { getAgoDuration } from "@/lib/utils";
 
 type ReturnedComment = CommentType & { timestamp: string };
 
@@ -107,6 +109,13 @@ const SingleComment: React.FC<SingleCommentProps> = ({
           />
         </div>
         <CardContent className="p-3">
+          <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground mb-2">
+            <div className="flex items-center gap-1">
+              <User size={14} />
+              <span>{comment.author}</span>
+            </div>
+            <span>{getAgoDuration(new Date(comment.timestamp))}</span>
+          </div>
           <div className="rounded-lg bg-primary/[0.015] p-3 mb-3 ">
             <p className="text-sm text-foreground whitespace-pre-wrap break-words">
               {comment.body}

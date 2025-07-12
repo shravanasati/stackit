@@ -5,8 +5,7 @@ import ReportContent from "@/components/Posts/ReportContent";
 import VoteCounter from "@/components/Posts/VoteCounter";
 import "@/app/scrollbar.css";
 import ReactMarkdown from "react-markdown";
-import { getPostSlug } from "@/lib/utils";
-import Link from "next/link";
+import { getPostSlug, getAgoDuration } from "@/lib/utils";
 import DOMPurify from "isomorphic-dompurify";
 import rehypeRaw from "rehype-raw";
 import { useEffect, useState } from "react";
@@ -15,16 +14,18 @@ import { Post as PostType } from "@/lib/models";
 import NotFound from "@/app/not-found";
 import { Unauthorized } from "@/components/Unauthorized";
 import { LoadingPost } from "@/components/LoadingPost";
-import { MoveLeft } from "lucide-react";
+import { MoveLeft, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface PostData {
   id: string;
   title: string;
   content: string;
-  boardName: string;
   upVotes: number;
   downVotes: number;
+  author: string;
+  tags: Array<{ id: string; text: string }>;
+  timestamp: string;
 }
 
 export default function PerPost({ postID }: { postID: string }) {
@@ -44,9 +45,11 @@ export default function PerPost({ postID }: { postID: string }) {
           id: parsedData.id,
           title: parsedData.title,
           content: parsedData.body,
-          boardName: parsedData.board,
           upVotes: parsedData.upvotes,
           downVotes: parsedData.downvotes,
+          author: parsedData.author!,
+          tags: parsedData.tags || [],
+          timestamp: parsedData.timestamp,
         });
         setPostSlug(getPostSlug(parsedData.id, parsedData.title));
       } else {
@@ -56,9 +59,11 @@ export default function PerPost({ postID }: { postID: string }) {
             id: fetchedData.data!.id,
             title: fetchedData.data!.title,
             content: fetchedData.data!.body,
-            boardName: fetchedData.data!.board,
             upVotes: fetchedData.data!.upvotes,
             downVotes: fetchedData.data!.downvotes,
+            author: fetchedData.data!.author!,
+            tags: fetchedData.data!.tags || [],
+            timestamp: fetchedData.data!.timestamp,
           });
           setPostSlug(
             getPostSlug(fetchedData.data!.id, fetchedData.data!.title)
@@ -105,11 +110,25 @@ export default function PerPost({ postID }: { postID: string }) {
               {postData.title}
             </CardTitle>
           </div>
-          <span className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors duration-200 ml-8">
-            <Link href={`/board/${postData.boardName}`}>
-              {postData.boardName}
-            </Link>
-          </span>
+          <div className="flex items-center gap-3 text-sm text-muted-foreground ml-10">
+            <div className="flex items-center gap-1">
+              <User size={16} />
+              <span>{postData.author}</span>
+            </div>
+            <span>{getAgoDuration(new Date(postData.timestamp))}</span>
+          </div>
+          {postData.tags && postData.tags.length > 0 && (
+            <div className="flex flex-wrap ml-10">
+              {postData.tags.map((tag) => (
+                <p
+                  key={tag.id}
+                  className="text-xs w-max sm:text-sm text-primary mt-2 hover:text-primary/80 transition-colors duration-200 whitespace-nowrap mr-2 bg-primary/10 px-2 py-0.5 rounded-full"
+                >
+                  {tag.text}
+                </p>
+              ))}
+            </div>
+          )}
         </div>
         <ReportContent
           postID={postData.id}

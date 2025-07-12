@@ -18,8 +18,12 @@ import {
   linkDialogPlugin,
   CreateLink,
 } from "@mdxeditor/editor";
+
+// @ts-expect-error it works without import
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+// @ts-expect-error it works without import
 import { $getSelection, $isRangeSelection, FORMAT_ELEMENT_COMMAND } from 'lexical';
+
 import { useCallback, useEffect } from 'react';
 import type { ForwardedRef } from "react";
 

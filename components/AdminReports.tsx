@@ -32,15 +32,15 @@ type AdminReportsProps = {
 };
 
 function createHyperLink(report: ReportPropType) {
-  const isPost = report.commentID ? false : true;
+  const isPost = report.comment_id ? false : true;
   let href: string;
   let linkText: string;
   if (isPost) {
-    href = `/post/${report.postID}`;
-    linkText = report.postID;
+    href = `/post/${report.post_id}`;
+    linkText = report.post_id;
   } else {
-    href = `/post/${report.postID}#${report.commentID}`;
-    linkText = report.commentID!;
+    href = `/post/${report.post_id}#${report.comment_id}`;
+    linkText = report.comment_id!;
   }
   return (
     <Link href={href} target="_blank">
@@ -63,7 +63,7 @@ export function AdminReports({ reports }: AdminReportsProps) {
   const { toast } = useToast();
   const initialLoadingStates: Record<string, LoadingState> =
     pendingReports.reduce((acc, report) => {
-      acc[report.reportID] = { approve: false, reject: false };
+      acc[report.report_id] = { approve: false, reject: false };
       return acc;
     }, {} as Record<string, LoadingState>);
   const [loadingStates, setLoadingStates] =
@@ -75,22 +75,22 @@ export function AdminReports({ reports }: AdminReportsProps) {
   ) => {
     setLoadingStates((prev) => ({
       ...prev,
-      [report.reportID]: { ...prev[report.reportID], [action]: true },
+      [report.report_id]: { ...prev[report.report_id], [action]: true },
     }));
 
     try {
-      const isPost = report.commentID ? false : true;
+      const isPost = report.comment_id ? false : true;
       let promise;
       if (isPost) {
         promise =
           action === "approve"
-            ? approvePost(report.reportID, report.postID)
-            : rejectPost(report.reportID, report.postID);
+            ? approvePost(report.report_id, report.post_id)
+            : rejectPost(report.report_id, report.post_id);
       } else {
         promise =
           action === "approve"
-            ? approveComment(report.reportID, report.postID, report.commentID!)
-            : rejectComment(report.reportID, report.postID, report.commentID!);
+            ? approveComment(report.report_id, report.post_id, report.comment_id!)
+            : rejectComment(report.report_id, report.post_id, report.comment_id!);
       }
       const resp = await promise;
       if (!resp.success) {
@@ -106,7 +106,7 @@ export function AdminReports({ reports }: AdminReportsProps) {
       toast({
         title: "Moderation successfull",
         description: `${isPost ? "Post" : "Comment"} <${
-          isPost ? report.postID : report.commentID
+          isPost ? report.post_id : report.comment_id!
         }> ${action}d`,
       });
     } catch (e) {
@@ -119,7 +119,7 @@ export function AdminReports({ reports }: AdminReportsProps) {
     } finally {
       setLoadingStates((prev) => ({
         ...prev,
-        [report.reportID]: { ...prev[report.reportID], [action]: false },
+        [report.report_id]: { ...prev[report.report_id], [action]: false },
       }));
     }
   };
@@ -146,7 +146,7 @@ export function AdminReports({ reports }: AdminReportsProps) {
               {pendingReports.map((report, index) => (
                 <TableRow key={index}>
                   <TableCell>{report.createdAt}</TableCell>
-                  <TableCell>{report.commentID ? "Comment" : "Post"}</TableCell>
+                  <TableCell>{report.comment_id ? "Comment" : "Post"}</TableCell>
                   <TableCell>{createHyperLink(report)}</TableCell>
                   <TableCell>{report.flag}</TableCell>
                   <TableCell>{report.status}</TableCell>
@@ -160,11 +160,11 @@ export function AdminReports({ reports }: AdminReportsProps) {
                             await handleModeration(report, "approve");
                           }}
                           disabled={
-                            loadingStates[report.reportID]?.approve ||
-                            loadingStates[report.reportID]?.reject
+                            loadingStates[report.report_id]?.approve ||
+                            loadingStates[report.report_id]?.reject
                           }
                         >
-                          {loadingStates[report.reportID]?.approve ? (
+                          {loadingStates[report.report_id]?.approve ? (
                             <>
                               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                               Approving
@@ -182,11 +182,11 @@ export function AdminReports({ reports }: AdminReportsProps) {
                             await handleModeration(report, "reject");
                           }}
                           disabled={
-                            loadingStates[report.reportID]?.approve ||
-                            loadingStates[report.reportID]?.reject
+                            loadingStates[report.report_id]?.approve ||
+                            loadingStates[report.report_id]?.reject
                           }
                         >
-                          {loadingStates[report.reportID]?.reject ? (
+                          {loadingStates[report.report_id]?.reject ? (
                             <>
                               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                               Rejecting

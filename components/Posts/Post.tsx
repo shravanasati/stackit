@@ -14,7 +14,8 @@ import { Post as PostType } from "@/lib/models";
 import ReactMarkdown from "react-markdown";
 import DOMPurify from "isomorphic-dompurify";
 import rehypeRaw from "rehype-raw";
-import { getPostSlug } from "@/lib/utils";
+import { getPostSlug, getAgoDuration } from "@/lib/utils";
+import { User } from "lucide-react";
 
 function trimBodyContent(content: string) {
   if (content.length > 50) {
@@ -30,7 +31,9 @@ export default function Post({
   upvotes,
   downvotes,
   comment_count,
+  author,
   tags,
+  timestamp,
 }: PostType) {
   const postSlug = getPostSlug(id, title);
   return (
@@ -45,17 +48,26 @@ export default function Post({
           >
             {title}
           </Link>
-          {tags && (<div className="flex flex-wrap">
-            {tags.map((tag) => (
-              <p
-                key={tag.id}
-                // href={`/board/${tag.text}`}
-                className="text-xs w-max sm:text-sm text-primary mt-2 hover:text-primary/80 transition-colors duration-200 whitespace-nowrap mr-2 bg-primary/10 px-2 py-0.5 rounded-full"
-              >
-                {tag.text}
-              </p>
-            ))}
-          </div>)}
+          <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground">
+            <div className="flex items-center gap-1">
+              <User size={14} />
+              <span>{author}</span>
+            </div>
+            <span>{getAgoDuration(new Date(timestamp))}</span>
+          </div>
+          {tags && (
+            <div className="flex flex-wrap">
+              {tags.map((tag) => (
+                <p
+                  key={tag.id}
+                  // href={`/board/${tag.text}`}
+                  className="text-xs w-max sm:text-sm text-primary mt-2 hover:text-primary/80 transition-colors duration-200 whitespace-nowrap mr-2 bg-primary/10 px-2 py-0.5 rounded-full"
+                >
+                  {tag.text}
+                </p>
+              ))}
+            </div>
+          )}
         </div>
       </CardHeader>
       <CardContent className="p-2 sm:p-4 text-sm">
