@@ -27,7 +27,7 @@ export default function Section1() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9 }}
       >
-        <Link href="/login">
+        <Link href="/feed">
           <InteractiveHoverButton
             text="&nbsp; Let's Go"
             className="border-primary/90"
