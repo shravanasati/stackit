@@ -1,0 +1,27 @@
+@import url("./globals.css");
+
+.stackit-scroll {
+  --sb-track-color: #090909c4;
+  --sb-thumb-color: var(--primary);
+  --sb-size: 1px;
+}
+
+.stackit-scroll::-webkit-scrollbar {
+  width: var(--sb-size);
+}
+
+.stackit-scroll::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 3px;
+}
+
+.stackit-scroll::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 3px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .stackit-scroll {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+}
