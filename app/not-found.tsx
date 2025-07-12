@@ -8,14 +8,14 @@ export default function NotFound() {
       <div className="text-center max-w-md">
         <div className="relative mx-auto mb-4">
           <Image
-            src="/not-found.jpg"
+            src=""
             alt="404 Not Found"
             width={686}
             height={386}
           />
         </div>
         <p className="text-foreground">
-          OH MY GAH! The page you&apos;re looking for doesn&apos;t exist.
+          The page you&apos;re looking for doesn&apos;t exist.
         </p>
         <Button asChild className="mt-4">
           <Link href="/">Return Home</Link>
