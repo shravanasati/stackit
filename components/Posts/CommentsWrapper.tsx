@@ -4,7 +4,6 @@ import Comments from "./Comments";
 
 export default async function CommentsWrapper({ postID }: { postID: string }) {
   const comments = await getPostComments(postID);
-  comments.forEach((c) => delete c.author);
 
   const formattedComments = comments.map((comment) => ({
     ...comment,

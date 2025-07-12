@@ -1,5 +1,5 @@
 import { db } from "@/lib/database/app";
-import { posts } from "./schema";
+import { posts, tokens } from "./schema";
 import { Post } from "@/lib/models";
 import { generatePostID } from "@/lib/utils";
 import { eq, ne, desc, sql } from "drizzle-orm";
@@ -18,7 +18,6 @@ export interface Tag {
   text: string;
 }
 
-export type ReturnedPost = Omit<Post, "author">
 
 // Note: Board functionality removed as it wasn't in the schema
 // If you need boards, add a board column to the posts table
@@ -30,8 +29,20 @@ export async function getPostsFeed(orderByField: string = "timestamp", lastDocID
       orderByField === "downvotes" ? posts.downvotes :
         posts.timestamp;
 
-  let query = db.select()
+  let query = db.select({
+    id: posts.id,
+    title: posts.title,
+    body: posts.body,
+    tags: posts.tags,
+    upvotes: posts.upvotes,
+    downvotes: posts.downvotes,
+    comment_count: posts.comment_count,
+    timestamp: posts.timestamp,
+    moderation_status: posts.moderation_status,
+    author: tokens.username,
+  })
     .from(posts)
+    .leftJoin(tokens, eq(posts.author, tokens.token))
     .where(ne(posts.moderation_status, "rejected"))
     .orderBy(desc(orderColumn))
     .limit(limitTo + 1);
@@ -45,8 +56,20 @@ export async function getPostsFeed(orderByField: string = "timestamp", lastDocID
       .limit(1);
 
     if (lastPost) {
-      query = db.select()
+      query = db.select({
+        id: posts.id,
+        title: posts.title,
+        body: posts.body,
+        tags: posts.tags,
+        upvotes: posts.upvotes,
+        downvotes: posts.downvotes,
+        comment_count: posts.comment_count,
+        timestamp: posts.timestamp,
+        moderation_status: posts.moderation_status,
+        author: tokens.username,
+      })
         .from(posts)
+        .leftJoin(tokens, eq(posts.author, tokens.token))
         .where(ne(posts.moderation_status, "rejected"))
         .orderBy(desc(orderColumn))
         .limit(limitTo + 1);
@@ -57,14 +80,9 @@ export async function getPostsFeed(orderByField: string = "timestamp", lastDocID
 
   const results = await query;
   const hasMore = results.length > limitTo;
-  const items = results.slice(0, limitTo).map((post) => {
-    // Remove author from the returned post
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { author, ...postWithoutAuthor } = post;
-    return postWithoutAuthor;
-  });
+  const items = results.slice(0, limitTo);
 
-  const result: PaginatedResult<ReturnedPost> = {
+  const result: PaginatedResult<Post> = {
     items,
     lastDocID: hasMore ? results[results.length - 2]?.id || null : null,
     hasMore,
@@ -77,8 +95,20 @@ export async function getPostsFeed(orderByField: string = "timestamp", lastDocID
 }
 
 export async function getPostByID(postID: string) {
-  const [post] = await db.select()
+  const [post] = await db.select({
+    id: posts.id,
+    title: posts.title,
+    body: posts.body,
+    tags: posts.tags,
+    upvotes: posts.upvotes,
+    downvotes: posts.downvotes,
+    comment_count: posts.comment_count,
+    timestamp: posts.timestamp,
+    moderation_status: posts.moderation_status,
+    author: tokens.username,
+  })
     .from(posts)
+    .leftJoin(tokens, eq(posts.author, tokens.token))
     .where(eq(posts.id, postID))
     .limit(1);
 

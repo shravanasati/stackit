@@ -1,6 +1,6 @@
 import type { DBComment, Gif } from "@/lib/models";
 import { db } from "./app";
-import { comments, posts } from "./schema";
+import { comments, posts, tokens } from "./schema";
 import { generateCommentID } from "../utils";
 import { eq, and, ne, sql } from "drizzle-orm";
 
@@ -37,8 +37,21 @@ export async function addComment(userToken: string, postID: string, commentBody:
 }
 
 export async function getPostComments(postID: string) {
-  const postComments = await db.select()
+  const postComments = await db.select({
+    id: comments.id,
+    post_id: comments.post_id,
+    body: comments.body,
+    level: comments.level,
+    upvotes: comments.upvotes,
+    downvotes: comments.downvotes,
+    parent_id: comments.parent_id,
+    timestamp: comments.timestamp,
+    moderation_status: comments.moderation_status,
+    author: tokens.username,
+    gif: comments.gif,
+  })
     .from(comments)
+    .leftJoin(tokens, eq(comments.author, tokens.token))
     .where(and(
       eq(comments.post_id, postID),
       ne(comments.moderation_status, "rejected")

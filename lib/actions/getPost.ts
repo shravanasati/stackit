@@ -18,9 +18,8 @@ export default async function getPost(postID: string) {
     return { status: 403, error: "Forbidden" }
   }
 
-  // ensure author hashes are not leaked to the frontend
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { author, timestamp, ...rest } = post
+  const { timestamp, ...rest } = post
 
   return { status: 200, data: rest }
 }

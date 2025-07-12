@@ -47,6 +47,7 @@ export function InfiniteScrollingPosts({
   data,
 }: InfiniteScrollingPostsProps) {
   const dataObj = JSON.parse(data);
+  console.log(dataObj)
   const [posts, setPosts] = useState<PostType[]>(dataObj.items);
   const [lastDocID, setLastDocID] = useState<string | null>(dataObj.lastDocID);
   const [hasMore, setHasMore] = useState(dataObj.hasMore);
@@ -186,12 +187,14 @@ export function InfiniteScrollingPosts({
         posts.map((post) => (
           <PostComponent
             key={`${post.id}`}
+            author={post.author}
             title={post.title}
             body={post.body}
             tags={post.tags}
             upvotes={post.upvotes}
             downvotes={post.downvotes}
             id={post.id}
+            timestamp={post.timestamp}
             moderation_status={post.moderation_status}
             comment_count={post.comment_count}
           />
