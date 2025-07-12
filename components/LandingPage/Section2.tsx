@@ -1,28 +1,28 @@
 "use client";
 
 import DottedCard from "@/components/DottedCard";
-import { Gem, Users, VenetianMask } from "lucide-react";
+import { MessageSquare, ShieldCheck, Users } from "lucide-react";
 import { motion } from "framer-motion";
 
 function Section2() {
   const gridItems = [
     {
       color: "blue",
-      lucideIcon: Gem,
-      title: "Exclusive",
-      description: "Built for Developer Community",
+      lucideIcon: MessageSquare,
+      title: "Q&A Hub",
+      description: "Ask questions and get answers from experts.",
     },
     {
       color: "yellow",
-      lucideIcon: VenetianMask,
-      title: "",
-      description: "Your identity stays private, always!",
+      lucideIcon: ShieldCheck,
+      title: "Trusted Community",
+      description: "Quality answers, peer moderation, and safe environment.",
     },
     {
       color: "purple",
       lucideIcon: Users,
-      title: "Diverse",
-      description: "Explore threads tailored to your interest",
+      title: "Collaborative",
+      description: "Connect, discuss, and solve problems together.",
     },
   ];
 
@@ -77,7 +77,7 @@ function Section2() {
           viewport={{ once: true, margin: "-100px" }}
           variants={titleVariants}
         >
-          StackIt is...
+          Why use StackIt?
         </motion.h2>
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center"

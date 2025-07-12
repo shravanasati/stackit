@@ -5,6 +5,7 @@ import { getAuthUser } from "@/lib/user"
 import { addComment } from "@/lib/database/comments"
 import { convertTimestamp } from "@/lib/utils"
 import { createUserNotification } from "@/lib/notifications"
+import { getUserFromToken } from "@/lib/database/firestore"
 
 const createCommentSchema = z.strictObject({
   postID: z.string().min(6, "Invalid post ID").max(6, "Invalid post ID"),
@@ -57,7 +58,8 @@ export async function createComment(values: z.infer<typeof createCommentSchema>)
     // Convert the comment for return with string timestamp
     const returnedComment = {
       ...newComment,
-      timestamp: convertTimestamp(newComment.timestamp)
+      timestamp: convertTimestamp(newComment.timestamp),
+      author: (await getUserFromToken(user.token!))?.username || "Unknown User",
     }
     createUserNotification(data.postID, newComment)
 
