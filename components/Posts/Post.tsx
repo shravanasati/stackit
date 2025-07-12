@@ -17,7 +17,7 @@ import rehypeRaw from "rehype-raw";
 import { getPostSlug, getAgoDuration } from "@/lib/utils";
 import { User } from "lucide-react";
 
-function trimBodyContent(content: string) {
+export function trimBodyContent(content: string) {
   if (content.length > 50) {
     return content.substring(0, 50) + "...";
   }

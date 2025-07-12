@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import VoteCounter from "@/components/Posts/VoteCounter";
 import ReportContent from "@/components/Posts/ReportContent";
+import DOMPurify from "isomorphic-dompurify";
 import { parseISO } from "date-fns";
 import {
   MessageCircle,
@@ -24,6 +25,9 @@ import { IGif } from "@giphy/js-types";
 import { GiphyPicker } from "./GiphyPicker";
 import { GiphyAttribution } from "@/components/GiphyAttribution";
 import { getAgoDuration } from "@/lib/utils";
+import ReactMarkdown from "react-markdown";
+import { trimBodyContent } from "./Post";
+import rehypeRaw from "rehype-raw";
 
 type ReturnedComment = CommentType & { timestamp: string };
 
@@ -117,9 +121,20 @@ const SingleComment: React.FC<SingleCommentProps> = ({
             <span>{getAgoDuration(new Date(comment.timestamp))}</span>
           </div>
           <div className="rounded-lg bg-primary/[0.015] p-3 mb-3 ">
-            <p className="text-sm text-foreground whitespace-pre-wrap break-words">
+            {/* <p className="text-sm text-foreground whitespace-pre-wrap break-words">
               {comment.body}
-            </p>
+            </p> */}
+          <ReactMarkdown
+            className="line-clamp-3 sm:line-clamp-4"
+            components={{
+              a: (props) => (
+                <a className="text-primary hover:underline" {...props} />
+              ),
+            }}
+            rehypePlugins={[rehypeRaw]}
+          >
+            {DOMPurify.sanitize(trimBodyContent(comment.body))}
+        </ReactMarkdown>
             {comment.gif && (
               <div className="flex flex-col gap-1">
                 {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { Textarea } from '@/components/ui/textarea';
+import React, { Suspense, useState } from 'react';
+// import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { GiphyPicker } from './GiphyPicker';
 import { IGif } from '@giphy/js-types';
 import { X } from 'lucide-react';
 import { Gif } from '@/lib/models';
+import AnimatedLoader from '../AnimatedLoader';
+import { EditorComp } from '../PostCreator';
 
 interface CommentInputProps {
   onSubmit: (comment: string, gif: Gif | null) => void;
@@ -51,13 +53,16 @@ export function CommentInput({ onSubmit }: CommentInputProps) {
 
   return (
     <div className="space-y-2 w-full">
-      <Textarea
-        placeholder="Add a comment..."
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        rows={3}
-        className="w-full p-2 border rounded-md focus:outline-none focus:border-2 resize-none"
-      />
+      <div className="w-full border rounded-lg">
+          <Suspense fallback={<AnimatedLoader />}>
+            <EditorComp
+              markdown={comment}
+              onChange={(value) =>
+                setComment(value)
+              }
+            />
+          </Suspense>
+      </div>
       {selectedGif && (
         <div className="relative size-32">
           {/* eslint-disable-next-line @next/next/no-img-element */}

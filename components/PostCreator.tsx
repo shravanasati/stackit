@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { TagInput } from "emblor";
 import { Tag } from "@/lib/database/posts";
 
-const EditorComp = dynamic(() => import("@/components/MdEditor"), {
+export const EditorComp = dynamic(() => import("@/components/MdEditor"), {
   ssr: true,
 });
 
