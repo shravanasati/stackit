@@ -18,17 +18,35 @@ import {
   linkDialogPlugin,
   CreateLink,
 } from "@mdxeditor/editor";
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $getSelection, $isRangeSelection, FORMAT_ELEMENT_COMMAND } from 'lexical';
-import { useCallback, useEffect } from 'react';
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import {
+  $getSelection,
+  $isRangeSelection,
+  FORMAT_ELEMENT_COMMAND,
+} from "lexical";
+import { useCallback, useEffect } from "react";
 import type { ForwardedRef } from "react";
+import * as React from "react";
 
+import { Button } from "@/components/ui/button";
+import {
+  EmojiPicker,
+  EmojiPickerSearch,
+  EmojiPickerContent,
+  EmojiPickerFooter,
+} from "@/components/ui/emoji-picker";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Laugh } from "lucide-react";
 // Custom Text Alignment Toolbar Component
 const TextAlignmentToolbar = () => {
   const [editor] = useLexicalComposerContext();
 
   const alignText = useCallback(
-    (alignment: 'left' | 'center' | 'right' | 'justify') => {
+    (alignment: "left" | "center" | "right" | "justify") => {
       editor.update(() => {
         const selection = $getSelection();
         if ($isRangeSelection(selection)) {
@@ -40,93 +58,164 @@ const TextAlignmentToolbar = () => {
   );
 
   return (
-    <div className="mdxeditor-toolbar-item" style={{ display: 'flex', gap: '4px' }}>
+    <div
+      className="mdxeditor-toolbar-item"
+      style={{ display: "flex", gap: "4px" }}
+    >
       <button
         type="button"
-        onClick={() => alignText('left')}
-        className="mdxeditor-toolbar-button"
+        onClick={() => alignText("left")}
+        className="mdxeditor-toolbar-button hover:bg-gray-200 rounded-md"
         title="Align Left"
-        style={{ 
-          minWidth: '28px', 
-          height: '28px', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center' 
+        style={{
+          minWidth: "28px",
+          height: "28px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <line x1="3" y1="6" x2="21" y2="6"/>
-          <line x1="3" y1="12" x2="15" y2="12"/>
-          <line x1="3" y1="18" x2="18" y2="18"/>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="15" y2="12" />
+          <line x1="3" y1="18" x2="18" y2="18" />
         </svg>
       </button>
       <button
         type="button"
-        onClick={() => alignText('center')}
-        className="mdxeditor-toolbar-button"
+        onClick={() => alignText("center")}
+        className="mdxeditor-toolbar-button hover:bg-gray-200 rounded-md"
         title="Align Center"
-        style={{ 
-          minWidth: '28px', 
-          height: '28px', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center' 
+        style={{
+          minWidth: "28px",
+          height: "28px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <line x1="3" y1="6" x2="21" y2="6"/>
-          <line x1="6" y1="12" x2="18" y2="12"/>
-          <line x1="3" y1="18" x2="21" y2="18"/>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="6" y1="12" x2="18" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
         </svg>
       </button>
       <button
         type="button"
-        onClick={() => alignText('right')}
-        className="mdxeditor-toolbar-button"
+        onClick={() => alignText("right")}
+        className="mdxeditor-toolbar-button hover:bg-gray-200 rounded-md"
         title="Align Right"
-        style={{ 
-          minWidth: '28px', 
-          height: '28px', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center' 
+        style={{
+          minWidth: "28px",
+          height: "28px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <line x1="3" y1="6" x2="21" y2="6"/>
-          <line x1="9" y1="12" x2="21" y2="12"/>
-          <line x1="6" y1="18" x2="21" y2="18"/>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="9" y1="12" x2="21" y2="12" />
+          <line x1="6" y1="18" x2="21" y2="18" />
         </svg>
       </button>
       <button
         type="button"
-        onClick={() => alignText('justify')}
-        className="mdxeditor-toolbar-button"
+        onClick={() => alignText("justify")}
+        className="mdxeditor-toolbar-button hover:bg-gray-200 rounded-md"
         title="Justify"
-        style={{ 
-          minWidth: '28px', 
-          height: '28px', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center' 
+        style={{
+          minWidth: "28px",
+          height: "28px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <line x1="3" y1="6" x2="21" y2="6"/>
-          <line x1="3" y1="12" x2="21" y2="12"/>
-          <line x1="3" y1="18" x2="21" y2="18"/>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
         </svg>
       </button>
     </div>
   );
 };
 
+export function EmojiSelector() {
+  const [editor] = useLexicalComposerContext();
+  const [isOpen, setIsOpen] = React.useState(false);
+  const handleEmojiSelect = (emoji: string) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        selection.insertText(emoji);
+      }
+    });
+  };
+  return (
+    <main className="flex h-max w-max items-center justify-center">
+      <Popover onOpenChange={setIsOpen} open={isOpen}>
+        <PopoverTrigger
+          className="bg-[#f0f0f3] shadow-none hover:bg-gray-200 p-1"
+          asChild
+        >
+          <Button>
+            <Laugh size={20} />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-fit p-0 bg-primary-foreground/80">
+          <EmojiPicker
+            className="h-[342px] bg-primary-foreground/80"
+            onEmojiSelect={({ emoji }) => {
+              setIsOpen(false);
+              handleEmojiSelect(emoji);
+            }}
+          >
+            <EmojiPickerSearch className="bg-primary-foreground/80" />
+            <EmojiPickerContent className="bg-primary-foreground/80" />
+            <EmojiPickerFooter className="bg-primary-foreground/80" />
+          </EmojiPicker>
+        </PopoverContent>
+      </Popover>
+    </main>
+  );
+}
+
 function MdEditor({
   editorRef,
   ...props
 }: MDXEditorProps & { editorRef?: ForwardedRef<MDXEditorMethods> }) {
   useEffect(() => {
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.textContent = `
       .markdown-editor ul {
         list-style-type: disc !important;
@@ -175,7 +264,7 @@ function MdEditor({
       }
     `;
     document.head.appendChild(style);
-    
+
     return () => {
       document.head.removeChild(style);
     };
@@ -192,6 +281,7 @@ function MdEditor({
               <ListsToggle />
               <CreateLink />
               <TextAlignmentToolbar />
+              <EmojiSelector />
             </>
           ),
         }),
