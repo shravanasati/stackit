@@ -30,16 +30,15 @@ export function Navbar({ user }: { user: User | null }) {
   const router = useRouter();
   const loggedIn = user !== null;
   const [open, setOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
-
+  const [popoverOpen, setPopoverOpen] = useState(false);
   const sheetLinks = [
     { href: "/", text: "Feed", icon: Newspaper },
     { href: "/board", text: "Explore", icon: Compass },
     { href: "/create", text: "Post", icon: PenTool },
     { href: "/notifications", text: "Notifications", icon: Bell },
   ];
-  const { notifications, loading, error } = useNotifications();
-  const unReadCount = notifications.filter((n) => n.status === "unread").length;
+  const { notifications, loading, error, unreadCount, setUnreadCount } =
+    useNotifications();
   const handleLogout = async () => {
     await logout();
     try {
@@ -65,16 +64,24 @@ export function Navbar({ user }: { user: User | null }) {
       {/* Buttons and sheet opener */}
       <div className="flex items-center space-x-4">
         {loggedIn && (
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline">
+          <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+            <PopoverTrigger
+              asChild
+              className="hover:bg-primary/10 "
+              onClick={() => setUnreadCount(0)}
+            >
+              <Button variant="outline" className="relative">
                 <Bell />
-                <span>{unReadCount}</span>
+                {unreadCount > 0 && (
+                  <span className="absolute top-0.5 right-1 text-primary/90 rounded-full px-1 text-xs">
+                    {unreadCount}
+                  </span>
+                )}
               </Button>
             </PopoverTrigger>
             <PopoverContent
               align="end"
-              className="w-80 min-h-28 max-h-96 overflow-y-auto"
+              className="w-80 min-h-28 max-h-96 overflow-y-scroll stackit-scroll"
             >
               <div className="grid gap-4 h-full w-full">
                 {loading && (
@@ -86,11 +93,12 @@ export function Navbar({ user }: { user: User | null }) {
                   </div>
                 )}
                 {error && <p>Error fetching notifications</p>}
-                {notifications.map((notif, idx) => (
+                {[...notifications, ...notifications].map((notif, idx) => (
                   <Link
                     href={notif.link}
                     key={idx}
-                    className="p-2 h-max border-b border-muted relative"
+                    onClick={() => setPopoverOpen(false)}
+                    className="p-2 h-max border-b border-muted relative hover:bg-primary/10 transition-colors duration-200 rounded-md"
                   >
                     <h4 className="font-medium">{notif.title}</h4>
                     <p className="text-sm text-muted-foreground">

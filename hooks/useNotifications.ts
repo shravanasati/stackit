@@ -5,6 +5,7 @@ export function useNotifications() {
   const [notifications, setNotifications] = useState<DBNotificationType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -16,6 +17,7 @@ export function useNotifications() {
           return res.json();
         });
         setNotifications(data);
+        setUnreadCount(data.filter((n: DBNotificationType) => n.status === "unread").length);
       } catch (error) {
         setError(error);
       } finally {
@@ -26,5 +28,5 @@ export function useNotifications() {
     fetchNotifications();
   }, []);
 
-  return { notifications, loading, error };
+  return { notifications, loading, error, unreadCount, setUnreadCount };
 }
