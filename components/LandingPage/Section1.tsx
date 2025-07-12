@@ -61,11 +61,8 @@ function HeroDescription() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.7, duration: 0.7 }}
     >
-      <div>Your anonymous haven for rants and gossip,</div>
-      <div>confessions and spilling the tea!</div>
-      <div className="mt-2">
-        Join us to share your thoughts and secrets without judgment.
-      </div>
+      <div>Your go-to platform to ask about your daily developemnt quests</div>
+      <div>Questions, Answers, Upvotes, Downvotes</div>
     </motion.div>
   );
 }
