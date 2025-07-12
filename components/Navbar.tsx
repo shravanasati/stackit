@@ -15,8 +15,18 @@ import {
   LogOut,
   Menu,
   Bell,
+  Dot,
 } from "lucide-react";
 import { useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useNotifications } from "@/hooks/useNotifications";
+import AnimatedLoader from "@/components/AnimatedLoader";
 
 export function Navbar({ user }: { user: User | null }) {
   const pathname = usePathname();
@@ -30,6 +40,7 @@ export function Navbar({ user }: { user: User | null }) {
     { href: "/create", text: "Post", icon: PenTool },
     { href: "/notifications", text: "Notifications", icon: Bell },
   ];
+  const { notifications, loading, error } = useNotifications();
 
   const handleLogout = async () => {
     await logout();
@@ -49,12 +60,59 @@ export function Navbar({ user }: { user: User | null }) {
       <Link className="flex items-center space-x-2" href="/">
         <SvgLogo />
         <span className="text-2xl font-bold hover:text-primary/90">
-          StackIt
+          EveryNyan
         </span>
       </Link>
 
       {/* Buttons and sheet opener */}
       <div className="flex items-center space-x-4">
+        {loggedIn && (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <Bell />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              className="w-80 min-h-28 max-h-96 overflow-y-auto"
+            >
+              <div className="grid gap-4 h-full w-full">
+                {loading && (
+                  <div className="relative w-full flex h-10 items-center justify-center">
+                    <div
+                      className="relative rounded-full border-4 border-transparent border-t-primary border-r-primary 
+                    size-5 animate-spin"
+                    ></div>
+                  </div>
+                )}
+                {error && <p>Error fetching notifications</p>}
+                {notifications.map((notif,idx) => (
+                  <Link
+                    href={notif.link}
+                    key={idx}
+                    className="p-2 h-max border-b border-muted relative"
+                  >
+                    <h4 className="font-medium">{notif.title}</h4>
+                    <p className="text-sm text-muted-foreground">
+                      {notif.description}
+                    </p>
+                    <span className="text-xs text-muted-foreground">
+                      {notif.timestamp}
+                    </span>
+                    <Dot
+                      className={`absolute top-0 right-0 ${
+                        notif.status === "read"
+                          ? "hidden"
+                          : "block fill-primary"
+                      } `}
+                    />
+                  </Link>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        )}
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button
