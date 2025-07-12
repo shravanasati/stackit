@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         maxAge: TOKEN_EXPIRY_DURATION, // 2 weeks
-        domain: process.env.NODE_ENV === "production" ? "everynyan.tech" : undefined,
+        domain: process.env.NODE_ENV === "production" ? "stackit.tech" : undefined,
       })
     }
 
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 60 * 60, // 1 hour
-      domain: process.env.NODE_ENV === "production" ? "everynyan.tech" : undefined,
+      domain: process.env.NODE_ENV === "production" ? "stackit.tech" : undefined,
     })
 
 
