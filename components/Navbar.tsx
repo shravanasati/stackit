@@ -17,7 +17,7 @@ import {
   Bell,
   Dot,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -30,6 +30,7 @@ export function Navbar({ user }: { user: User | null }) {
   const router = useRouter();
   const loggedIn = user !== null;
   const [open, setOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const sheetLinks = [
     { href: "/", text: "Feed", icon: Newspaper },
@@ -38,7 +39,7 @@ export function Navbar({ user }: { user: User | null }) {
     { href: "/notifications", text: "Notifications", icon: Bell },
   ];
   const { notifications, loading, error } = useNotifications();
-
+  const unReadCount = notifications.filter((n) => n.status === "unread").length;
   const handleLogout = async () => {
     await logout();
     try {
@@ -68,6 +69,7 @@ export function Navbar({ user }: { user: User | null }) {
             <PopoverTrigger asChild>
               <Button variant="outline">
                 <Bell />
+                <span>{unReadCount}</span>
               </Button>
             </PopoverTrigger>
             <PopoverContent
@@ -84,7 +86,7 @@ export function Navbar({ user }: { user: User | null }) {
                   </div>
                 )}
                 {error && <p>Error fetching notifications</p>}
-                {notifications.map((notif,idx) => (
+                {notifications.map((notif, idx) => (
                   <Link
                     href={notif.link}
                     key={idx}

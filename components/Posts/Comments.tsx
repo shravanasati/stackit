@@ -21,7 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { SortDropdown } from "../SortDropdown";
 import { IGif } from "@giphy/js-types";
 import { GiphyPicker } from "./GiphyPicker";
-import { GiphyAttribution } from "../GiphyAttribution";
+import { GiphyAttribution } from "@/components/GiphyAttribution";
 
 type ReturnedComment = CommentType & { timestamp: string };
 
@@ -65,12 +65,14 @@ const SingleComment: React.FC<SingleCommentProps> = ({
     setDisableReplyInput(true);
     setReplyCooldown(5);
 
-    const gifData = selectedGif ? {
-      src: selectedGif?.images.original.webp || "",
-      alt: selectedGif?.alt_text || "",
-      height: selectedGif?.images.original.height || 0,
-      width: selectedGif?.images.original.width || 0,
-    } : null;
+    const gifData = selectedGif
+      ? {
+          src: selectedGif?.images.original.webp || "",
+          alt: selectedGif?.alt_text || "",
+          height: selectedGif?.images.original.height || 0,
+          width: selectedGif?.images.original.width || 0,
+        }
+      : null;
     await onSubmitReply(replyText, gifData);
     setReplyText("");
 
@@ -93,8 +95,9 @@ const SingleComment: React.FC<SingleCommentProps> = ({
         id={comment.id}
       >
         <div
-          className={`absolute top-0 -left-6 flex items-center justify-center ${comment.parent_id != null ? "block" : "hidden"
-            }`}
+          className={`absolute top-0 -left-6 flex items-center justify-center ${
+            comment.parent_id != null ? "block" : "hidden"
+          }`}
         >
           <Spline
             strokeDasharray="1 3"
@@ -113,7 +116,7 @@ const SingleComment: React.FC<SingleCommentProps> = ({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={comment.gif.src}
-                  className='object-cover mt-2'
+                  className="object-cover mt-2"
                   alt={comment.gif.alt}
                   width={comment.gif.width}
                   height={comment.gif.height}
@@ -186,7 +189,7 @@ const SingleComment: React.FC<SingleCommentProps> = ({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={selectedGif.images.original.webp || "/placeholder.svg"}
-                className='object-cover '
+                className="object-cover "
                 alt={selectedGif.alt_text}
                 width={selectedGif.images.original.width}
                 height={selectedGif.images.original.height}
@@ -201,11 +204,13 @@ const SingleComment: React.FC<SingleCommentProps> = ({
           )}
           <div className="flex justify-start space-x-2">
             <Button onClick={() => setShowGiphyPicker(!showGiphyPicker)}>
-              {showGiphyPicker ? 'Hide GIFs' : 'Add GIF'}
+              {showGiphyPicker ? "Hide GIFs" : "Add GIF"}
             </Button>
             <Button
               disabled={
-                (!replyText.trim() && !selectedGif) || disableReplyInput || replyText.length > 500
+                (!replyText.trim() && !selectedGif) ||
+                disableReplyInput ||
+                replyText.length > 500
               }
               onClick={handleSubmitReply}
             >
@@ -244,9 +249,14 @@ const SingleComment: React.FC<SingleCommentProps> = ({
   );
 };
 
-type CommentSortByType = "upvotes" | "downvotes" | "oldest" | "comment_count" | "newest";
+type CommentSortByType =
+  | "upvotes"
+  | "downvotes"
+  | "oldest"
+  | "comment_count"
+  | "newest";
 
-const commentSortOptions: { title: string, value: CommentSortByType }[] = [
+const commentSortOptions: { title: string; value: CommentSortByType }[] = [
   {
     title: "Popular",
     value: "upvotes",
@@ -267,7 +277,7 @@ const commentSortOptions: { title: string, value: CommentSortByType }[] = [
     title: "Controversial",
     value: "downvotes",
   },
-]
+];
 
 export default function Comments({
   postID,
@@ -320,7 +330,6 @@ export default function Comments({
     const sortByCommentCount = (a: CommentNodeType, b: CommentNodeType) =>
       b.replies.length - a.replies.length;
 
-
     const sortCommentsRecursively = (comments: CommentNodeType[]) => {
       switch (commentSort) {
         case "upvotes":
@@ -370,7 +379,7 @@ export default function Comments({
         postID,
         parentID: replyingTo,
         level: parentComment.level + 1,
-        gif
+        gif,
       });
 
       if (!resp.success) {
@@ -428,7 +437,9 @@ export default function Comments({
         <SortDropdown
           value={commentSort}
           options={commentSortOptions}
-          onValueChange={(value: string) => setCommentSort(value as CommentSortByType)}
+          onValueChange={(value: string) =>
+            setCommentSort(value as CommentSortByType)
+          }
         />
       )}
       {commentTree.map((comment) => (

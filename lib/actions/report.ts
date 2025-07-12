@@ -5,7 +5,6 @@ import { updatePostModerationStatus } from "@/lib/firebase/posts"
 import { reportContent, Report as ReportType, resolveReport } from "@/lib/firebase/reports"
 import { addSecurityLog } from "@/lib/firebase/security_log"
 import { getAuthUser } from "@/lib/user"
-import { discordWebhookReport } from "@/lib/discord"
 import { revalidatePath } from "next/cache"
 
 async function _reportGeneric(postID: string, flag: string, type: "post" | "comment", commentID?: string) {
@@ -30,8 +29,6 @@ async function _reportGeneric(postID: string, flag: string, type: "post" | "comm
     }
 
     await reportContent(newReport)
-    await discordWebhookReport({ type, commentID, postID, selectedFlag: flag });
-
     return { success: true, message: "Content reported successfully" }
   } catch (e) {
     console.error("unable to report content", e)
