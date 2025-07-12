@@ -50,3 +50,46 @@
   color: #edbd58; /* Matches Tailwind's yellow-400 */
   text-decoration: underline;
 }
+
+.markdown-editor ul {
+  list-style-type: disc !important;
+  padding-left: 20px !important;
+  margin-left: 0 !important;
+}
+
+.markdown-editor ol {
+  list-style-type: decimal !important;
+  padding-left: 20px !important;
+  margin-left: 0 !important;
+}
+
+.markdown-editor li {
+  list-style: inherit !important;
+  display: list-item !important;
+  margin-left: 0 !important;
+}
+
+.markdown-editor ul li {
+  list-style-type: disc !important;
+}
+
+.markdown-editor ol li {
+  list-style-type: decimal !important;
+}
+
+/* Nested lists */
+.markdown-editor ul ul {
+  list-style-type: circle !important;
+}
+
+.markdown-editor ul ul ul {
+  list-style-type: square !important;
+}
+
+.markdown-editor ol ol {
+  list-style-type: lower-alpha !important;
+}
+
+.markdown-editor ol ol ol {
+  list-style-type: lower-roman !important;
+}
