@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useRouter, usePathname } from "next/navigation";
 import SvgLogo from "@/components/SvgLogo";
+import ReactMarkdown from "react-markdown";
+import DOMPurify from "isomorphic-dompurify";
+import rehypeRaw from "rehype-raw";
 import { User } from "@/lib/user";
 import { logout } from "@/lib/actions/logout";
 import {
@@ -23,6 +26,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useNotifications } from "@/hooks/useNotifications";
+import { trimBodyContent } from "./Posts/Post";
 
 export function Navbar({ user }: { user: User | null }) {
   const pathname = usePathname();
@@ -98,11 +102,23 @@ export function Navbar({ user }: { user: User | null }) {
                     className="p-2 h-max border-b border-muted relative hover:bg-primary/10 transition-colors duration-200 rounded-md"
                   >
                     <h4 className="font-medium">{notif.title}</h4>
-                    <p className="text-sm text-muted-foreground">
+                    {/* <p className="text-sm text-muted-foreground">
                       {notif.description}
-                    </p>
+                    </p> */}
+
+                    <ReactMarkdown
+                        className="line-clamp-3 sm:line-clamp-4"
+                        components={{
+                          a: (props) => (
+                            <a className="text-primary hover:underline" {...props} />
+                          ),
+                        }}
+                        rehypePlugins={[rehypeRaw]}
+                      >
+                        {DOMPurify.sanitize(trimBodyContent(notif.description))}
+                    </ReactMarkdown>
                     <span className="text-xs text-muted-foreground">
-                      {notif.timestamp}
+                      {notif.timestamp instanceof Date ? notif.timestamp.toLocaleString() : notif.timestamp}
                     </span>
                     <Dot
                       className={`absolute top-0 right-0 ${
