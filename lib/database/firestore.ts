@@ -79,3 +79,8 @@ export async function getOTPCount() {
   const [result] = await db.select({ count: count() }).from(otp);
   return result.count;
 }
+
+export async function getAllUsers() {
+  const users = await db.select().from(tokens);
+  return users;
+}

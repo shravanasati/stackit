@@ -4,7 +4,7 @@ import { getPostByID } from "@/lib/database/posts";
 import { Comment as CommentType } from "./models";
 import { getPostSlug } from "./utils";
 
-type NotificationRequest = {
+export type NotificationRequest = {
   user: string,
   title: string,
   description: string,

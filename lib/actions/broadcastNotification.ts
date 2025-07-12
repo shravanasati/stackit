@@ -2,6 +2,8 @@
 
 import { z } from "zod"
 import { getAuthUser } from "@/lib/user"
+import { saveNotifications } from "@/lib/database/notifications"
+import { getAllUsers } from "@/lib/database/firestore"
 
 
 const formSchema = z.strictObject({
@@ -25,6 +27,7 @@ export async function broadcastNotification(values: z.infer<typeof formSchema>) 
   try {
     const result = formSchema.safeParse(values)
     if (!result.success) {
+      console.error("Validation failed:", result.error);
       return { success: false, error: result.error.errors[0].message }
     }
 
@@ -33,31 +36,23 @@ export async function broadcastNotification(values: z.infer<typeof formSchema>) 
       return { success: false, error: "Unauthorized" }
     }
 
-    const url = `${process.env.NEXT_PUBLIC_NOTIFICATIONS_PUSH_ADDRESS}/broadcast`
-    const data= result.data
+    const allUserIds = (await getAllUsers()).map(u => u.token)
+    const data = result.data
     const notificationObject = {
       title: data.title,
       description: data.body,
       link: data.link,
+      status: "unread" as const,
     }
 
-    const resp = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(notificationObject),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + process.env.NOTIFICATIONS_API_KEY,
-      },
-    })
-
-    const text = await resp.text()
-
-    if (resp.status !== 200) {
-      return { success: false, error: "Notifications server returned non-200 status code: " + text }
-    }
+    await saveNotifications(allUserIds.map(token => ({
+        ...notificationObject,
+        user: token,
+    })))
 
     return { success: true, error: '' }
   } catch (e) {
-    return { success: false, error: (e as Error).message}
+    console.error("Error in broadcastNotification:", e)
+    return { success: false, error: (e as Error).message }
   }
 }

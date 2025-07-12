@@ -42,6 +42,7 @@
     "drizzle-orm": "^0.44.2",
     "emblor": "^1.4.8",
     "framer-motion": "^11.11.10",
+    "frimousse": "^0.2.0",
     "geist": "^1.4.2",
     "input-otp": "^1.2.4",
     "isomorphic-dompurify": "^2.16.0",
