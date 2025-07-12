@@ -14,7 +14,7 @@ import {
   X,
   User,
 } from "lucide-react";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, Suspense } from "react";
 import { Comment as CommentType, Gif } from "@/lib/models";
 import { createComment } from "@/lib/actions/createComment";
 import { CommentInput } from "./CommentInput";
@@ -28,6 +28,8 @@ import { getAgoDuration } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import { trimBodyContent } from "./Post";
 import rehypeRaw from "rehype-raw";
+import { EditorComp } from "../PostCreator";
+import AnimatedLoader from "../AnimatedLoader";
 
 type ReturnedComment = CommentType & { timestamp: string };
 
@@ -200,13 +202,22 @@ const SingleComment: React.FC<SingleCommentProps> = ({
       {isReplying && (
         <div className="mt-2 space-y-2 mb-4">
           <div className="p-1">
-            <textarea
+            {/* <textarea
               className="w-full bg-primary/[0.07] p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               rows={3}
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
               placeholder="Write your reply..."
-            />
+            /> */}
+
+            <Suspense fallback={<AnimatedLoader />}>
+              <EditorComp
+                markdown={replyText}
+                onChange={(value) =>
+                 setReplyText(value)
+                }
+              />
+            </Suspense>
           </div>
           {selectedGif && (
             <div className="relative size-32">
