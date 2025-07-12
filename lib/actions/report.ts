@@ -1,9 +1,9 @@
 "use server"
 
-import { updateCommentModerationStatus } from "@/lib/firebase/comments"
-import { updatePostModerationStatus } from "@/lib/firebase/posts"
-import { reportContent, Report as ReportType, resolveReport } from "@/lib/firebase/reports"
-import { addSecurityLog } from "@/lib/firebase/security_log"
+import { updateCommentModerationStatus } from "@/lib/database/comments"
+import { updatePostModerationStatus } from "@/lib/database/posts"
+import { reportContent, Report as ReportType, resolveReport } from "@/lib/database/reports"
+import { addSecurityLog } from "@/lib/database/security_log"
 import { getAuthUser } from "@/lib/user"
 import { revalidatePath } from "next/cache"
 

@@ -2,10 +2,10 @@
 
 import { z } from "zod"
 import { getAuthUser } from "@/lib/user"
-import { addComment } from "@/lib/firebase/comments"
-import { convertTimestamp } from "../utils"
-import { Comment } from "../models"
-import { createUserNotification } from "../notifications"
+import { addComment } from "@/lib/database/comments"
+import { convertTimestamp } from "@/lib/utils"
+import { Comment } from "@/lib/models"
+import { createUserNotification } from "@/lib/notifications"
 
 const createCommentSchema = z.strictObject({
   postID: z.string().min(6, "Invalid post ID").max(6, "Invalid post ID"),

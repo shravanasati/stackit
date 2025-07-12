@@ -2,7 +2,7 @@
 
 import { z } from "zod"
 import { generateOTP } from "@/lib/utils"
-import { getOTP, saveOTP } from "@/lib/firebase/firestore"
+import { getOTP, saveOTP } from "@/lib/database/firestore"
 import { sendOTPEmail } from "@/lib/email"
 import isRateLimited from "@/lib/ratelimit"
 import { verifyCaptchaResponse } from "../captcha"

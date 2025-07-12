@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, useRef, useState, useTransition,useEffect } from "react";
+import { Suspense, useRef, useState, useTransition, useEffect } from "react";
 import AnimatedLoader from "@/components/AnimatedLoader";
 // import { TagList } from "@/lib/boards";
 import { createPost } from "@/lib/actions/createPost";
@@ -14,9 +14,8 @@ import * as z from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { TagInput } from 'emblor';
-import { Tag } from "@/lib/firebase/posts";
-
+import { TagInput } from "emblor";
+import { Tag } from "@/lib/database/posts";
 
 const EditorComp = dynamic(() => import("@/components/MdEditor"), {
   ssr: true,
@@ -34,17 +33,21 @@ const formSchema = z.strictObject({
     .string()
     .min(1, "Post cannot be empty")
     .max(4000, "Post must be within 4000 characters"),
-  tags: z.array(z.object({
-    id: z.string(),
-    text: z.string()
-  })).min(1, "At least one tag is required"),
+  tags: z
+    .array(
+      z.object({
+        id: z.string(),
+        text: z.string(),
+      })
+    )
+    .min(1, "At least one tag is required"),
 });
 
 interface FormData {
   // board: string;
   title: string;
   body: string;
-  tags : Tag[];
+  tags: Tag[];
 }
 
 export function PostCreator({ role }: { role: string }) {
@@ -60,13 +63,13 @@ export function PostCreator({ role }: { role: string }) {
   const searchParams = useSearchParams();
   const tagParam = searchParams.get("tag");
   const initialTags: Tag[] = [];
-  
+
   if (tagParam) {
     const tagValue = tagParam[0].toUpperCase() + tagParam.slice(1);
     initialTags.push({ id: crypto.randomUUID(), text: tagValue });
   }
 
-  const [tags, setTags] = useState<Tag[]>(initialTags); 
+  const [tags, setTags] = useState<Tag[]>(initialTags);
   // Initialize tags state with initialTags
 
   // Update formState when tags change
@@ -88,13 +91,15 @@ export function PostCreator({ role }: { role: string }) {
   const [formState, setFormState] = useState<FormData>({
     // board: boardParam ?? boards[0],
     title: titleParam ?? "",
-    body: bodyParam ?? "*hello* **world**. type away your post, in <u>markdown</u>.",
-    tags: tags
+    body:
+      bodyParam ??
+      "*hello* **world**. type away your post, in <u>markdown</u>.",
+    tags: tags,
   });
 
-    useEffect(() => {
-      setFormState((prev) => ({ ...prev, tags }));
-    }, [tags]);
+  useEffect(() => {
+    setFormState((prev) => ({ ...prev, tags }));
+  }, [tags]);
   const handleSubmit = async () => {
     try {
       setLoading(true);
@@ -231,5 +236,3 @@ export function PostCreator({ role }: { role: string }) {
     </div>
   );
 }
-
-

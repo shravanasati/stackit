@@ -4,7 +4,7 @@ import { useInView } from "react-intersection-observer";
 import { Post as PostType } from "@/lib/models";
 import { LoadingPost, CaughtUp } from "@/components/LoadingPost";
 import PostComponent from "@/components/Posts/Post";
-import { PaginatedResult } from "@/lib/firebase/posts";
+import { PaginatedResult } from "@/lib/database/posts";
 import { useToast } from "@/hooks/use-toast";
 import { SortDropdown } from "@/components/SortDropdown";
 
@@ -34,13 +34,13 @@ const sortByFields = [
 
 const compareObjects = (obj1: unknown, obj2: unknown) => {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
-}
+};
 
 const cachePosts = (posts: PostType[]) => {
   for (const post of posts) {
     sessionStorage.setItem(post.id, JSON.stringify(post));
   }
-}
+};
 
 export function InfiniteScrollingPosts({
   boardName = null,
@@ -56,7 +56,7 @@ export function InfiniteScrollingPosts({
     board: dataObj.boardName,
     lastDocID: dataObj.lastDocID,
     orderByField: dataObj.orderByField,
-    limitTo: dataObj.limit
+    limitTo: dataObj.limit,
   };
 
   useEffect(() => {
@@ -68,7 +68,6 @@ export function InfiniteScrollingPosts({
   useEffect(() => {
     cachePosts(posts);
   }, [posts]);
-
 
   const { toast } = useToast();
   const { ref, inView } = useInView();
@@ -116,7 +115,12 @@ export function InfiniteScrollingPosts({
 
       setLastDocID(result.lastDocID);
       setHasMore(result.hasMore);
-      urlParams = { board: result.boardName, lastDocID: result.lastDocID, orderByField: result.orderByField, limitTo: result.limit };
+      urlParams = {
+        board: result.boardName,
+        lastDocID: result.lastDocID,
+        orderByField: result.orderByField,
+        limitTo: result.limit,
+      };
     } catch (error) {
       console.error("Error fetching posts:", error);
       setHasMore(false);
@@ -146,10 +150,10 @@ export function InfiniteScrollingPosts({
       lastDocID: lastDocID,
       orderByField: sortBy,
       limitTo: 10,
-    }
-    if (compareObjects(newParams, urlParams)) {
-      return
     };
+    if (compareObjects(newParams, urlParams)) {
+      return;
+    }
     sessionStorage.setItem("sortBy", sortBy);
     setPosts([]);
     setLastDocID(null);

@@ -1,5 +1,5 @@
 import { Timestamp } from "firebase-admin/firestore";
-import { Tag } from "./firebase/posts";
+import { Tag } from "@/lib/database/posts";
 
 type ModerationStatus = "pending" | "approved" | "rejected";
 

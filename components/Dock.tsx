@@ -1,4 +1,4 @@
-import { getUnreadNotificationCountByUser } from "@/lib/firebase/notifications";
+import { getUnreadNotificationCountByUser } from "@/lib/database/notifications";
 import { getAuthUser } from "@/lib/user";
 import { HomeIcon, LucideIcon, Plus } from "lucide-react";
 import Link from "next/link";
@@ -28,7 +28,11 @@ export function DockIcon({ href, tooltipTitle, icon: Icon }: DockIconProps) {
     </Link>
   );
 }
-export async function UnreadNotificationCount({ userToken }: { userToken: string }) {
+export async function UnreadNotificationCount({
+  userToken,
+}: {
+  userToken: string;
+}) {
   const count = await getUnreadNotificationCountByUser(userToken);
 
   if (count === 0) return null;

@@ -6,7 +6,7 @@ import Section1 from "@/components/LandingPage/Section1";
 import Section2 from "@/components/LandingPage/Section2";
 import Section3 from "@/components/LandingPage/Section3";
 import Section4 from "@/components/LandingPage/Section4";
-import { getPostsFeed } from "@/lib/firebase/posts";
+import { getPostsFeed } from "@/lib/database/posts";
 import { getAuthUser } from "@/lib/user";
 import { AnimatePresence } from "framer-motion";
 import { cookies } from "next/headers";

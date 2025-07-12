@@ -1,5 +1,5 @@
 import { getAuthUser } from "@/lib/user";
-import { getNotificationsByUser, markAllNotificationsRead } from "@/lib/firebase/notifications";
+import { getNotificationsByUser, markAllNotificationsRead } from "@/lib/database/notifications";
 import { getAgoDuration } from "@/lib/utils";
 import { NextResponse } from "next/server";
 

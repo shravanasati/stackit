@@ -1,7 +1,7 @@
 "use server"
 
 import { cookies } from "next/headers"
-import { deleteToken } from "@/lib/firebase/firestore"
+import { deleteToken } from "@/lib/database/firestore"
 import { decrypt } from "@/lib/crypt"
 import { redirect } from "next/navigation"
 

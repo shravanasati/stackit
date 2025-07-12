@@ -1,5 +1,5 @@
 import { Timestamp, FieldValue } from "firebase-admin/firestore"
-import { db } from "@/lib/firebase/app";
+import { db } from "@/lib/database/app";
 import { DBPost, Post } from "@/lib/models";
 import { generatePostID } from "@/lib/utils";
 

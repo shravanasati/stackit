@@ -1,5 +1,5 @@
-import { updateTokenLifetime } from "@/lib/firebase/firestore"
-import { getPostsFeed, PaginatedResult } from "@/lib/firebase/posts"
+import { updateTokenLifetime } from "@/lib/database/firestore"
+import { getPostsFeed, PaginatedResult } from "@/lib/database/posts"
 import { Post } from "@/lib/models"
 import { getAuthUser } from "@/lib/user"
 import { TOKEN_EXPIRY_DURATION } from "@/lib/utils"

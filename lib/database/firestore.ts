@@ -1,5 +1,5 @@
 import { Timestamp } from "firebase-admin/firestore";
-import { db } from "@/lib/firebase/app";
+import { db } from "@/lib/database/app";
 import { hash } from "../crypt";
 
 export type OTPEntry = {

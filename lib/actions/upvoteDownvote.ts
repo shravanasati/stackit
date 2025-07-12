@@ -1,8 +1,8 @@
 "use server"
 
-import { downvotePost, upvotePost } from "@/lib/firebase/posts"
+import { downvotePost, upvotePost } from "@/lib/database/posts"
 import { getAuthUser } from "@/lib/user"
-import { downvoteComment, upvoteComment } from "@/lib/firebase/comments"
+import { downvoteComment, upvoteComment } from "@/lib/database/comments"
 
 async function postVoteChangeAction(postID: string, voteType: "up" | "down", undo: boolean) {
   const user = await getAuthUser()

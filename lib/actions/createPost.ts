@@ -2,7 +2,7 @@
 // import { TagList } from "../boards"
 import { z } from "zod"
 import { getAuthUser } from "@/lib/user"
-import { savePost } from "@/lib/firebase/posts"
+import { savePost } from "@/lib/database/posts"
 import { getPostSlug } from "@/lib/utils"
 
 

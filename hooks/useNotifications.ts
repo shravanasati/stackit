@@ -1,4 +1,4 @@
-import { DBNotificationType } from "@/lib/firebase/notifications";
+import { DBNotificationType } from "@/lib/database/notifications";
 import { useEffect, useState } from "react";
 
 export function useNotifications() {

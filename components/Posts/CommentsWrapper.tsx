@@ -1,10 +1,10 @@
-import { getPostComments } from "@/lib/firebase/comments";
+import { getPostComments } from "@/lib/database/comments";
 import { convertTimestamp } from "@/lib/utils";
 import Comments from "./Comments";
 
 export default async function CommentsWrapper({ postID }: { postID: string }) {
   const comments = await getPostComments(postID);
-  comments.forEach((c) => delete c.author)
+  comments.forEach((c) => delete c.author);
 
   const formattedComments = comments.map((comment) => ({
     ...comment,
@@ -12,8 +12,8 @@ export default async function CommentsWrapper({ postID }: { postID: string }) {
   }));
 
   return (
-      <div className="flex-grow overflow-auto everynyan-scroll">
-        <Comments postID={postID} initialComments={formattedComments} />
-      </div>
-  )
+    <div className="flex-grow overflow-auto everynyan-scroll">
+      <Comments postID={postID} initialComments={formattedComments} />
+    </div>
+  );
 }

@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers"
 import { decrypt } from "./crypt"
-import { deleteToken, getToken } from "./firebase/firestore"
+import { deleteToken, getToken } from "./database/firestore"
 import { cache } from "react"
 import { Timestamp } from "firebase-admin/firestore"
 import { TOKEN_EXPIRY_DURATION } from "./utils"

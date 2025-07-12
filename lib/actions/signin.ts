@@ -1,9 +1,9 @@
 'use server'
 
 import { z } from "zod"
-import { getOTP, storeToken } from "@/lib/firebase/firestore"
-import { addSecurityLog } from "@/lib/firebase/security_log"
-// import {deleteOTP} from "@/lib/firebase/firestore"
+import { getOTP, storeToken } from "@/lib/database/firestore"
+import { addSecurityLog } from "@/lib/database/security_log"
+// import {deleteOTP} from "@/lib/database/firestore"
 import { TOKEN_EXPIRY_DURATION } from "@/lib/utils"
 import { encrypt, hash, newToken } from "@/lib/crypt"
 import { cookies } from "next/headers"

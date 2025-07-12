@@ -1,7 +1,7 @@
 "use server"
 
-import { getPostByID } from "@/lib/firebase/posts"
-import { getAuthUser } from "../user"
+import { getPostByID } from "@/lib/database/posts"
+import { getAuthUser } from "@/lib/user"
 
 export default async function getPost(postID: string) {
   const user = await getAuthUser()

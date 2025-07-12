@@ -1,6 +1,6 @@
-import { getParentComments } from "./firebase/comments";
-import { saveNotifications } from "./firebase/notifications";
-import { getPostByID } from "./firebase/posts";
+import { getParentComments } from "@/lib/database/comments";
+import { saveNotifications } from "@/lib/database/notifications";
+import { getPostByID } from "@/lib/database/posts";
 import { Comment as CommentType } from "./models";
 import { getPostSlug } from "./utils";
 
