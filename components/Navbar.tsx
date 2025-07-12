@@ -31,7 +31,7 @@ export function Navbar({ user }: { user: User | null }) {
   const [open, setOpen] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const sheetLinks = [
-    { href: "/", text: "Feed", icon: Newspaper },
+    { href: "/feed", text: "Feed", icon: Newspaper },
     { href: "/create", text: "Post", icon: PenTool },
   ];
   const { notifications, loading, error, unreadCount, setUnreadCount } =
